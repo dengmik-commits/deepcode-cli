@@ -161,7 +161,7 @@ async function promptUpdateChoice({
 
 async function runNpmInstallGlobal(installSpec: string): Promise<boolean> {
   return new Promise((resolve) => {
-    const child = spawn("npm", ["install", "-g", installSpec], {
+    const child = spawn(["npm", "install", "-g", installSpec].join(" "), [], {
       stdio: "inherit",
       shell: process.platform === "win32",
     });
@@ -205,7 +205,7 @@ function runNpmViewLatestVersion(
     if (registry) {
       args.push("--registry", registry);
     }
-    const child = spawn("npm", args, {
+    const child = spawn(["npm", ...args].join(" "), [], {
       stdio: ["ignore", "pipe", "pipe"],
       shell: process.platform === "win32",
     });

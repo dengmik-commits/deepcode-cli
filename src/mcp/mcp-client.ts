@@ -131,7 +131,9 @@ export class McpClient {
         // On Windows, shell: true lets cmd.exe resolve the command via
         // PATHEXT (npx → npx.cmd, etc.) without blindly appending .cmd,
         // which would break absolute paths like process.execPath.
-        this.process = spawn(this.command, args, {
+        // Join command+args into a single string to avoid Node.js DEP0190
+        // deprecation warning (passing args array with shell:true).
+        this.process = spawn([this.command, ...args].join(" "), [], {
           stdio: ["pipe", "pipe", "pipe"],
           env: childEnv,
           shell: true,
