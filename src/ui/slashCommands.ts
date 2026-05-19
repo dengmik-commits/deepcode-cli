@@ -10,7 +10,8 @@ export type SlashCommandKind =
   | "continue"
   | "mcp"
   | "raw"
-  | "exit";
+  | "exit"
+  | "plan";
 
 export type SlashCommandItem = {
   kind: SlashCommandKind;
@@ -70,6 +71,12 @@ export const BUILTIN_SLASH_COMMANDS: SlashCommandItem[] = [
     label: "/raw",
     args: ["lite", "normal", "raw-scrollback"],
     description: "Toggle display mode for viewing or collapsing reasoning content",
+  },
+  {
+    kind: "plan",
+    name: "plan",
+    label: "/plan",
+    description: "Create a detailed implementation plan without executing code",
   },
   {
     kind: "exit",

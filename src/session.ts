@@ -15,6 +15,7 @@ import {
   getRuntimeContext,
   getSystemPrompt,
   getTools,
+  type PromptToolOptions,
   type ToolDefinition,
 } from "./prompt";
 import {
@@ -258,6 +259,7 @@ export class SessionManager {
   private readonly toolExecutor: ToolExecutor;
   private readonly mcpManager = new McpManager();
   private mcpToolDefinitions: ToolDefinition[] = [];
+  private planModeSessionIds = new Set<string>();
 
   constructor(options: SessionManagerOptions) {
     this.projectRoot = options.projectRoot;
@@ -983,6 +985,10 @@ ${skillMd}
       }
     }
 
+    if (userPrompt.skills?.some((skill) => skill.name === "plan-mode")) {
+      this.planModeSessionIds.add(sessionId);
+    }
+
     this.activeSessionId = sessionId;
     await this.activateSession(sessionId, controller);
     return sessionId;
@@ -1153,7 +1159,7 @@ ${skillMd}
           {
             model,
             messages,
-            tools: getTools(this.getPromptToolOptions(), this.mcpToolDefinitions),
+            tools: getTools(this.getPromptToolOptions(sessionId), this.mcpToolDefinitions),
             ...thinkingOptions,
           },
           { signal: sessionController.signal },
@@ -1339,10 +1345,11 @@ ${skillMd}
     this.saveSessionMessages(sessionId, sessionMessages);
   }
 
-  private getPromptToolOptions(): { model: string; webSearchEnabled: boolean } {
+  private getPromptToolOptions(sessionId?: string): PromptToolOptions {
     return {
       model: this.getResolvedSettings().model,
       webSearchEnabled: true,
+      planMode: sessionId ? this.planModeSessionIds.has(sessionId) : false,
     };
   }
 

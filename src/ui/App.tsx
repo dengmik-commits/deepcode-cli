@@ -15,6 +15,7 @@ import {
   type SkillInfo,
   type UserPromptContent,
 } from "../session";
+import { getExtensionRoot } from "../prompt";
 import {
   applyModelConfigSelection,
   type DeepcodingSettings,
@@ -227,6 +228,53 @@ export function App({ projectRoot, initialPrompt, onRestart }: AppProps): React.
         setShowWelcome(false);
         setMcpStatuses(sessionManager.getMcpStatus());
         setView("mcp-status");
+        return;
+      }
+
+      if (submission.command === "plan") {
+        sessionManager.setActiveSessionId(null);
+        setMessages([]);
+        setStatusLine("");
+        setErrorLine(null);
+        setRunningProcesses(null);
+        setActiveStatus(null);
+        setDismissedQuestionIds(new Set());
+        setShowWelcome(false);
+
+        const extensionRoot = getExtensionRoot();
+        const planSkillPath = path.join(extensionRoot, "templates", "skills", "plan-mode.md");
+        const planModeSkill: SkillInfo = {
+          name: "plan-mode",
+          path: planSkillPath,
+          description: "Analyze requirements and create a detailed implementation plan without executing code",
+        };
+
+        const planPrompt: UserPromptContent = {
+          text: submission.text || "Please create an implementation plan.",
+          skills: [planModeSkill],
+        };
+
+        if (planPrompt.text) {
+          setMessages((prev) => [...prev, buildSyntheticUserMessage(`/plan ${submission.text || ""}`, 0)]);
+        }
+
+        setBusy(true);
+        setErrorLine(null);
+        setRunningProcesses(null);
+        setShowProcessStdout(false);
+        processStdoutRef.current.clear();
+        try {
+          await sessionManager.handleUserPrompt(planPrompt);
+          await refreshSkills();
+          refreshSessionsList();
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          setErrorLine(message);
+        } finally {
+          setBusy(false);
+          setStreamProgress(null);
+          setRunningProcesses(null);
+        }
         return;
       }
 
