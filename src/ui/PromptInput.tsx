@@ -4,11 +4,18 @@ import chalk from "chalk";
 import { ARGS_SEPARATOR } from "./constants";
 import {
   EMPTY_BUFFER,
+  PASTE_MARKER_REGEX,
   backspace,
+  cleanPasteContent,
   deleteForward,
+  deletePasteMarkerBackward,
+  deletePasteMarkerForward,
   deleteWordBefore,
   deleteWordAfter,
+  expandPasteMarkers,
+  findPasteMarkerContaining,
   getCurrentSlashToken,
+  hasActivePasteMarkers,
   insertText,
   isEmpty,
   killLine,
@@ -47,11 +54,15 @@ export type { InputKey } from "./prompt";
 
 import { useTerminalInput } from "./prompt";
 import type { InputKey } from "./prompt";
-import { useHiddenTerminalCursor, useTerminalExtendedKeys, useTerminalFocusReporting } from "./prompt";
-import SlashCommandMenu from "./SlashCommandMenu";
-import type { ModelConfigSelection, ReasoningEffort } from "../settings";
-import DropdownMenu from "./DropdownMenu";
-import { RawModelDropdown } from "./components";
+import {
+  useHiddenTerminalCursor,
+  useTerminalExtendedKeys,
+  useBracketedPaste,
+  useTerminalFocusReporting,
+} from "./prompt";
+import SlashCommandMenu, { isSkillSelected } from "./SlashCommandMenu";
+import type { ModelConfigSelection } from "../settings";
+import { FileMentionMenu, ModelsDropdown, RawModelDropdown, SkillsDropdown } from "./components";
 
 export type PromptSubmission = {
   text: string;
@@ -86,21 +97,6 @@ type Props = {
 };
 
 const SPINNER_FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
-export const MODEL_COMMAND_MODELS = ["deepseek-v4-pro", "deepseek-v4-flash"] as const;
-
-type ThinkingModeOption = {
-  label: string;
-  thinkingEnabled: boolean;
-  reasoningEffort?: ReasoningEffort;
-};
-
-export const MODEL_COMMAND_THINKING_OPTIONS: ThinkingModeOption[] = [
-  { label: "Thinking mode [max]", thinkingEnabled: true, reasoningEffort: "max" },
-  { label: "Thinking mode [high]", thinkingEnabled: true, reasoningEffort: "high" },
-  { label: "No thinking", thinkingEnabled: false },
-];
-
-type ModelDropdownStep = "model" | "thinking";
 
 const PromptPrefixLine = React.memo(function PromptPrefixLine({ busy }: { busy: boolean }): React.ReactElement {
   const [spinnerIndex, setSpinnerIndex] = useState(0);
@@ -148,12 +144,8 @@ export const PromptInput = React.memo(function PromptInput({
   const [menuIndex, setMenuIndex] = useState(0);
   const [showSkillsDropdown, setShowSkillsDropdown] = useState(false);
   const [openRawModelDropdown, setOpenRawModelDropdown] = useState(false);
-  const [skillsDropdownIndex, setSkillsDropdownIndex] = useState(0);
-  const [modelDropdownStep, setModelDropdownStep] = useState<ModelDropdownStep | null>(null);
-  const [modelDropdownIndex, setModelDropdownIndex] = useState(0);
-  const [pendingModel, setPendingModel] = useState<string | null>(null);
+  const [showModelDropdown, setShowModelDropdown] = useState(false);
   const [fileMentionItems, setFileMentionItems] = useState<FileMentionItem[]>(() => scanFileMentionItems(projectRoot));
-  const [fileMentionIndex, setFileMentionIndex] = useState(0);
   const [dismissedFileMentionKey, setDismissedFileMentionKey] = useState<string | null>(null);
   const [historyCursor, setHistoryCursor] = useState(-1);
   const [draftBeforeHistory, setDraftBeforeHistory] = useState<string | null>(null);
@@ -163,6 +155,12 @@ export const PromptInput = React.memo(function PromptInput({
   const wasBusyRef = React.useRef(busy);
   const hadFileMentionTokenRef = React.useRef(false);
   const appliedDraftNonceRef = React.useRef<number | null>(null);
+  const pastesRef = React.useRef<Map<number, string>>(new Map());
+  const pasteCounterRef = React.useRef<number>(0);
+  // Track expanded paste regions for toggle (Ctrl+O expand / collapse).
+  const expandedRegionsRef = React.useRef<Map<number, { start: number; end: number; content: string; marker: string }>>(
+    new Map()
+  );
 
   const fileMentionToken = getCurrentFileMentionToken(buffer);
   const hasFileMentionToken = fileMentionToken !== null;
@@ -173,33 +171,42 @@ export const PromptInput = React.memo(function PromptInput({
   );
   const showFileMentionMenu =
     !showSkillsDropdown &&
-    !modelDropdownStep &&
+    !showModelDropdown &&
     fileMentionToken !== null &&
     fileMentionKey !== dismissedFileMentionKey;
   const slashItems = React.useMemo(() => buildSlashCommands(skills), [skills]);
   const slashToken = getCurrentSlashToken(buffer);
   const slashMenu = React.useMemo(
     () =>
-      showSkillsDropdown || modelDropdownStep || showFileMentionMenu
+      showSkillsDropdown || showModelDropdown || showFileMentionMenu
         ? []
         : slashToken
           ? filterSlashCommands(slashItems, slashToken)
           : [],
-    [showSkillsDropdown, modelDropdownStep, showFileMentionMenu, slashToken, slashItems]
+    [showSkillsDropdown, showModelDropdown, showFileMentionMenu, slashToken, slashItems]
   );
   const showMenu = slashMenu.length > 0;
   const promptHistoryKey = React.useMemo(() => promptHistory.join("\0"), [promptHistory]);
   const hasRunningProcess = runningProcesses && runningProcesses.size > 0;
-  const processHint = hasRunningProcess ? " · ctrl+o view output" : "";
+  const hasCollapsedMarkers = hasActivePasteMarkers(buffer.text, pastesRef.current);
+  const hasExpandedRegions = expandedRegionsRef.current.size > 0;
+  const processOrPasteHint = hasRunningProcess
+    ? " · ctrl+o view output"
+    : hasCollapsedMarkers
+      ? " · ctrl+o expand"
+      : hasExpandedRegions
+        ? " · ctrl+o collapse"
+        : "";
   const footerText = statusMessage
     ? statusMessage
     : busy
       ? loadingText && loadingText.trim()
-        ? `${loadingText}${processHint}`
-        : `esc to interrupt · ctrl+c to cancel input${processHint}`
-      : `enter send · shift+enter newline · @ files · ctrl+v image · / commands · ctrl+d exit${processHint}`;
+        ? `${loadingText}${processOrPasteHint}`
+        : `esc to interrupt · ctrl+c to cancel input${processOrPasteHint}`
+      : `enter send · shift+enter newline · @ files · ctrl+v image · / commands · ctrl+d exit${processOrPasteHint}`;
   useTerminalFocusReporting(stdout, !disabled);
   useTerminalExtendedKeys(stdout, !disabled);
+  useBracketedPaste(stdout, !disabled);
   useHiddenTerminalCursor(stdout, !disabled);
 
   const refreshFileMentionItems = React.useCallback(() => {
@@ -241,33 +248,6 @@ export const PromptInput = React.memo(function PromptInput({
   }, [fileMentionKey]);
 
   useEffect(() => {
-    if (!showFileMentionMenu) {
-      setFileMentionIndex(0);
-      return;
-    }
-    if (fileMentionIndex >= fileMentionMatches.length) {
-      setFileMentionIndex(Math.max(0, fileMentionMatches.length - 1));
-    }
-  }, [fileMentionMatches.length, fileMentionIndex, showFileMentionMenu]);
-
-  useEffect(() => {
-    if (skillsDropdownIndex >= skills.length) {
-      setSkillsDropdownIndex(Math.max(0, skills.length - 1));
-    }
-  }, [skills.length, skillsDropdownIndex]);
-
-  useEffect(() => {
-    if (!modelDropdownStep) {
-      return;
-    }
-    const optionCount =
-      modelDropdownStep === "model" ? MODEL_COMMAND_MODELS.length : MODEL_COMMAND_THINKING_OPTIONS.length;
-    if (modelDropdownIndex >= optionCount) {
-      setModelDropdownIndex(Math.max(0, optionCount - 1));
-    }
-  }, [modelDropdownIndex, modelDropdownStep]);
-
-  useEffect(() => {
     if (!statusMessage) {
       return;
     }
@@ -285,10 +265,11 @@ export const PromptInput = React.memo(function PromptInput({
     setSelectedSkills([]);
     setShowSkillsDropdown(false);
     setOpenRawModelDropdown(false);
-    setModelDropdownStep(null);
     setHistoryCursor(-1);
     setDraftBeforeHistory(null);
     clearPromptUndoRedoState(undoRedoRef.current);
+    pastesRef.current.clear();
+    expandedRegionsRef.current.clear();
   }, [promptDraft]);
 
   useEffect(() => {
@@ -312,16 +293,7 @@ export const PromptInput = React.memo(function PromptInput({
       }
 
       if (key.escape) {
-        if (modelDropdownStep) {
-          closeModelDropdown();
-          return;
-        }
-        if (showSkillsDropdown) {
-          setShowSkillsDropdown(false);
-          return;
-        }
-        if (showFileMentionMenu && fileMentionKey) {
-          setDismissedFileMentionKey(fileMentionKey);
+        if (showFileMentionMenu) {
           return;
         }
         if (busy) {
@@ -335,7 +307,7 @@ export const PromptInput = React.memo(function PromptInput({
         if (runningProcesses && runningProcesses.size > 0 && onToggleProcessStdout) {
           onToggleProcessStdout();
         } else {
-          setStatusMessage("No running process to inspect");
+          expandPasteMarkerAtCursor();
         }
         return;
       }
@@ -363,6 +335,8 @@ export const PromptInput = React.memo(function PromptInput({
         } else if (!isEmpty(buffer)) {
           setBuffer(EMPTY_BUFFER);
           clearUndoRedoStacks();
+          pastesRef.current.clear();
+          expandedRegionsRef.current.clear();
         } else {
           setStatusMessage("press ctrl+d to exit");
         }
@@ -373,7 +347,7 @@ export const PromptInput = React.memo(function PromptInput({
         setPendingExit(false);
       }
 
-      if (openRawModelDropdown) {
+      if (openRawModelDropdown || showSkillsDropdown || showModelDropdown) {
         return;
       }
 
@@ -381,51 +355,9 @@ export const PromptInput = React.memo(function PromptInput({
         exitHistoryBrowsing();
       }
 
-      if (showSkillsDropdown) {
-        if (skills.length === 0) {
-          setShowSkillsDropdown(false);
-        } else {
-          if (key.upArrow) {
-            setSkillsDropdownIndex((idx) => (idx - 1 + skills.length) % skills.length);
-            return;
-          }
-          if (key.downArrow) {
-            setSkillsDropdownIndex((idx) => (idx + 1) % skills.length);
-            return;
-          }
-          if ((input === " " && !key.ctrl && !key.meta) || (key.return && !key.shift && !key.meta)) {
-            const skill = skills[skillsDropdownIndex];
-            if (skill) {
-              toggleSelectedSkill(skill);
-            }
-            return;
-          }
-          if (key.tab) {
-            setShowSkillsDropdown(false);
-            return;
-          }
-        }
-      }
-
-      if (modelDropdownStep) {
-        const optionCount =
-          modelDropdownStep === "model" ? MODEL_COMMAND_MODELS.length : MODEL_COMMAND_THINKING_OPTIONS.length;
-        if (key.upArrow) {
-          setModelDropdownIndex((idx) => (idx - 1 + optionCount) % optionCount);
-          return;
-        }
-        if (key.downArrow) {
-          setModelDropdownIndex((idx) => (idx + 1) % optionCount);
-          return;
-        }
-        if ((input === " " && !key.ctrl && !key.meta) || (key.return && !key.shift && !key.meta)) {
-          selectModelDropdownItem();
-          return;
-        }
-        if (key.tab) {
-          closeModelDropdown();
-          return;
-        }
+      if (key.paste) {
+        handlePaste(input);
+        return;
       }
 
       if (key.ctrl && (input === "v" || input === "V")) {
@@ -460,31 +392,8 @@ export const PromptInput = React.memo(function PromptInput({
       const isPlainReturn = returnAction === "submit";
 
       if (showFileMentionMenu) {
-        if (key.upArrow) {
-          if (fileMentionMatches.length > 0) {
-            setFileMentionIndex((idx) => (idx - 1 + fileMentionMatches.length) % fileMentionMatches.length);
-          }
+        if (key.upArrow || key.downArrow || key.tab || returnAction === "submit") {
           return;
-        }
-        if (key.downArrow) {
-          if (fileMentionMatches.length > 0) {
-            setFileMentionIndex((idx) => (idx + 1) % fileMentionMatches.length);
-          }
-          return;
-        }
-        if (key.tab || returnAction === "submit") {
-          const selected = fileMentionMatches[fileMentionIndex];
-          if (selected && fileMentionToken) {
-            insertFileMentionSelection(selected);
-            return;
-          }
-          if (key.tab) {
-            setDismissedFileMentionKey(fileMentionKey);
-            return;
-          }
-          if (fileMentionKey) {
-            setDismissedFileMentionKey(fileMentionKey);
-          }
         }
       }
 
@@ -522,12 +431,12 @@ export const PromptInput = React.memo(function PromptInput({
       }
 
       if (key.delete) {
-        updateBuffer((s) => deleteForward(s));
+        updateBuffer((s) => deletePasteMarkerForward(s, pastesRef.current) ?? deleteForward(s));
         return;
       }
 
       if (key.backspace) {
-        updateBuffer((s) => backspace(s));
+        updateBuffer((s) => deletePasteMarkerBackward(s, pastesRef.current) ?? backspace(s));
         return;
       }
 
@@ -617,6 +526,8 @@ export const PromptInput = React.memo(function PromptInput({
       }
       if (key.ctrl && (input === "u" || input === "U")) {
         updateBuffer(() => EMPTY_BUFFER);
+        pastesRef.current.clear();
+        expandedRegionsRef.current.clear();
         return;
       }
       if (key.ctrl && (input === "w" || input === "W")) {
@@ -694,6 +605,81 @@ export const PromptInput = React.memo(function PromptInput({
     });
   }
 
+  function handlePaste(pastedText: string): void {
+    const totalChars = pastedText.length;
+
+    if (totalChars <= 1000) {
+      const newlineCount = (pastedText.match(/\n/g) ?? []).length;
+      if (newlineCount <= 9) {
+        const clean = pastedText
+          .replace(/\r\n|\r/g, "\n")
+          .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "")
+          .replace(/\t/g, "    ");
+        updateBuffer((s) => insertText(s, clean));
+        return;
+      }
+    }
+
+    // Large paste: store raw text, insert marker with line/char count.
+    const lineCount = (pastedText.match(/\n/g) ?? []).length + 1;
+    pasteCounterRef.current += 1;
+    const pasteId = pasteCounterRef.current;
+    pastesRef.current.set(pasteId, pastedText);
+
+    const marker =
+      lineCount > 10 ? `[paste #${pasteId} +${lineCount} lines]` : `[paste #${pasteId} ${totalChars} chars]`;
+
+    updateBuffer((s) => insertText(s, marker));
+  }
+
+  function expandPasteMarkerAtCursor(): void {
+    // First, try to collapse an already-expanded region at the cursor.
+    for (const [id, region] of expandedRegionsRef.current) {
+      if (buffer.cursor >= region.start && buffer.cursor <= region.end) {
+        // Collapse back to marker.
+        expandedRegionsRef.current.delete(id);
+        pastesRef.current.set(id, region.content);
+        setTimeout(() => {
+          updateBuffer((s) => {
+            const text = s.text.slice(0, region.start) + region.marker + s.text.slice(region.end);
+            return { text, cursor: region.start + region.marker.length };
+          });
+        }, 0);
+        return;
+      }
+    }
+
+    // No expanded region at cursor — try to expand a paste marker.
+    const marker = findPasteMarkerContaining(buffer);
+    if (!marker) {
+      setStatusMessage("No paste marker at cursor");
+      return;
+    }
+    const content = pastesRef.current.get(marker.id);
+    if (!content) {
+      setStatusMessage("Paste content not found");
+      return;
+    }
+
+    const pasteId = marker.id;
+    const originalMarker = buffer.text.slice(marker.start, marker.end);
+    pastesRef.current.delete(pasteId);
+
+    setTimeout(() => {
+      updateBuffer((s) => {
+        const text = s.text.slice(0, marker.start) + cleanPasteContent(content) + s.text.slice(marker.end);
+        const newEnd = marker.start + content.length;
+        expandedRegionsRef.current.set(pasteId, {
+          start: marker.start,
+          end: newEnd,
+          content,
+          marker: originalMarker,
+        });
+        return { text, cursor: marker.start };
+      });
+    }, 0);
+  }
+
   function navigateHistory(direction: -1 | 1): void {
     if (promptHistory.length === 0) {
       return;
@@ -728,6 +714,17 @@ export const PromptInput = React.memo(function PromptInput({
     setDismissedFileMentionKey(null);
   }
 
+  function resetPromptInput(): void {
+    setBuffer(EMPTY_BUFFER);
+    clearUndoRedoStacks();
+    setImageUrls([]);
+    setSelectedSkills([]);
+    setShowSkillsDropdown(false);
+    pastesRef.current.clear();
+    expandedRegionsRef.current.clear();
+    pasteCounterRef.current = 0;
+  }
+
   function handleSlashSelection(item: SlashCommandItem): void {
     if (busy && item.kind !== "exit") {
       setStatusMessage("wait for the current response or press esc to interrupt");
@@ -747,7 +744,8 @@ export const PromptInput = React.memo(function PromptInput({
     }
     if (item.kind === "model") {
       clearSlashToken();
-      openModelDropdown();
+      setShowSkillsDropdown(false);
+      setShowModelDropdown(true);
       return;
     }
     if (item.kind === "raw") {
@@ -757,56 +755,32 @@ export const PromptInput = React.memo(function PromptInput({
     }
     if (item.kind === "new") {
       onSubmit({ text: "", imageUrls: [], command: "new" });
-      setBuffer(EMPTY_BUFFER);
-      clearUndoRedoStacks();
-      setImageUrls([]);
-      setSelectedSkills([]);
-      setShowSkillsDropdown(false);
+      resetPromptInput();
       return;
     }
     if (item.kind === "init") {
       onSubmit(buildInitPromptSubmission(selectedSkills));
-      setBuffer(EMPTY_BUFFER);
-      clearUndoRedoStacks();
-      setImageUrls([]);
-      setSelectedSkills([]);
-      setShowSkillsDropdown(false);
+      resetPromptInput();
       return;
     }
     if (item.kind === "resume") {
       onSubmit({ text: "", imageUrls: [], command: "resume" });
-      setBuffer(EMPTY_BUFFER);
-      clearUndoRedoStacks();
-      setImageUrls([]);
-      setSelectedSkills([]);
-      setShowSkillsDropdown(false);
+      resetPromptInput();
       return;
     }
     if (item.kind === "continue") {
       onSubmit({ text: "/continue", imageUrls: [], command: "continue" });
-      setBuffer(EMPTY_BUFFER);
-      clearUndoRedoStacks();
-      setImageUrls([]);
-      setSelectedSkills([]);
-      setShowSkillsDropdown(false);
+      resetPromptInput();
       return;
     }
     if (item.kind === "undo") {
       onSubmit({ text: "/undo", imageUrls: [], command: "undo" });
-      setBuffer(EMPTY_BUFFER);
-      clearUndoRedoStacks();
-      setImageUrls([]);
-      setSelectedSkills([]);
-      setShowSkillsDropdown(false);
+      resetPromptInput();
       return;
     }
     if (item.kind === "mcp") {
       onSubmit({ text: "/mcp", imageUrls: [], command: "mcp" });
-      setBuffer(EMPTY_BUFFER);
-      clearUndoRedoStacks();
-      setImageUrls([]);
-      setSelectedSkills([]);
-      setShowSkillsDropdown(false);
+      resetPromptInput();
       return;
     }
     if (item.kind === "plan") {
@@ -848,15 +822,11 @@ export const PromptInput = React.memo(function PromptInput({
     }
 
     onSubmit({
-      text: buffer.text,
+      text: expandPasteMarkers(buffer.text, pastesRef.current),
       imageUrls,
       selectedSkills,
     });
-    setBuffer(EMPTY_BUFFER);
-    clearUndoRedoStacks();
-    setImageUrls([]);
-    setSelectedSkills([]);
-    setShowSkillsDropdown(false);
+    resetPromptInput();
   }
 
   function addSelectedSkill(skill: SkillInfo): void {
@@ -873,63 +843,9 @@ export const PromptInput = React.memo(function PromptInput({
     clearUndoRedoStacks();
   }
 
-  function openModelDropdown(): void {
-    const currentModelIndex = MODEL_COMMAND_MODELS.findIndex((model) => model === modelConfig.model);
-    setPendingModel(null);
-    setModelDropdownStep("model");
-    setModelDropdownIndex(currentModelIndex >= 0 ? currentModelIndex : 0);
-    setShowSkillsDropdown(false);
-  }
-
-  function closeModelDropdown(): void {
-    setModelDropdownStep(null);
-    setPendingModel(null);
-  }
-
-  function selectModelDropdownItem(): void {
-    if (modelDropdownStep === "model") {
-      const model = MODEL_COMMAND_MODELS[modelDropdownIndex] ?? modelConfig.model;
-      setPendingModel(model);
-      setModelDropdownStep("thinking");
-      setModelDropdownIndex(getThinkingOptionIndex(modelConfig));
-      return;
-    }
-
-    const option = MODEL_COMMAND_THINKING_OPTIONS[modelDropdownIndex] ?? MODEL_COMMAND_THINKING_OPTIONS[0];
-    const selection: ModelConfigSelection = {
-      model: pendingModel ?? modelConfig.model,
-      thinkingEnabled: option.thinkingEnabled,
-      reasoningEffort: option.reasoningEffort ?? modelConfig.reasoningEffort,
-    };
-    closeModelDropdown();
-    Promise.resolve(onModelConfigChange(selection))
-      .then((message) => {
-        if (message) {
-          setStatusMessage(message);
-        }
-      })
-      .catch((error) => {
-        const message = error instanceof Error ? error.message : String(error);
-        setStatusMessage(`Failed to update model settings: ${message}`);
-      });
-  }
-
-  const modelDropdownItems =
-    modelDropdownStep === "model"
-      ? MODEL_COMMAND_MODELS.map((model) => ({
-          label: model,
-          selected: model === (pendingModel ?? modelConfig.model),
-          description: model === modelConfig.model ? "current model" : "",
-        }))
-      : MODEL_COMMAND_THINKING_OPTIONS.map((option) => ({
-          label: option.label,
-          selected: getThinkingOptionIndex(modelConfig) === MODEL_COMMAND_THINKING_OPTIONS.indexOf(option),
-          description: option.thinkingEnabled ? `reasoningEffort: ${option.reasoningEffort}` : "thinking disabled",
-        }));
-
   const showFooterText = useMemo(
-    () => showMenu || showSkillsDropdown || openRawModelDropdown || modelDropdownStep !== null || showFileMentionMenu,
-    [showMenu, showSkillsDropdown, modelDropdownStep, openRawModelDropdown, showFileMentionMenu]
+    () => showMenu || showSkillsDropdown || openRawModelDropdown || showModelDropdown || showFileMentionMenu,
+    [showMenu, showSkillsDropdown, showModelDropdown, openRawModelDropdown, showFileMentionMenu]
   );
 
   const matchedCommand = slashToken ? findExactSlashCommand(slashItems, slashToken) : null;
@@ -961,7 +877,7 @@ export const PromptInput = React.memo(function PromptInput({
         borderDimColor
       >
         <PromptPrefixLine busy={busy} />
-        <Text>{renderBufferWithCursor(buffer, !disabled && hasTerminalFocus, placeholder)}</Text>
+        <Text>{renderBufferWithCursor(buffer, !disabled && hasTerminalFocus, placeholder, pastesRef.current)}</Text>
         {inlineHint ? <Text dimColor>{inlineHint}</Text> : null}
       </Box>
       <RawModelDropdown
@@ -970,75 +886,34 @@ export const PromptInput = React.memo(function PromptInput({
         onSelect={(mode) => onRawModeChange?.(mode)}
         screenWidth={screenWidth}
       />
-      {showSkillsDropdown ? (
-        <DropdownMenu
-          width={screenWidth}
-          title="Select Skills"
-          helpText="Space toggle · Enter toggle · Esc to close"
-          emptyText="No skills found"
-          items={skills.map((skill) => ({
-            key: skill.path || skill.name,
-            label: skill.name,
-            description: skill.path,
-            selected: isSkillSelected(selectedSkills, skill),
-            statusIndicator: skill.isLoaded ? { symbol: "✓", color: "green" } : undefined,
-          }))}
-          activeIndex={skillsDropdownIndex}
-          activeColor="#229ac3"
-          maxVisible={6}
-        />
-      ) : null}
-      {modelDropdownStep ? (
-        <DropdownMenu
-          width={screenWidth}
-          title={modelDropdownStep === "model" ? "Select Model" : "Select Thinking Mode"}
-          helpText={
-            modelDropdownStep === "model"
-              ? "Space/Enter select model · Esc to cancel"
-              : "Space/Enter apply · Esc to cancel"
+      <SkillsDropdown
+        width={screenWidth}
+        open={showSkillsDropdown}
+        onClose={setShowSkillsDropdown}
+        skills={skills}
+        selectedSkills={selectedSkills}
+        onSelect={toggleSelectedSkill}
+      />
+      <ModelsDropdown
+        open={showModelDropdown}
+        modelConfig={modelConfig}
+        width={screenWidth}
+        onClose={() => setShowModelDropdown(false)}
+        onModelConfigChange={onModelConfigChange}
+        onStatusMessage={setStatusMessage}
+      />
+      <FileMentionMenu
+        open={showFileMentionMenu}
+        width={screenWidth}
+        token={fileMentionToken}
+        items={fileMentionMatches}
+        onClose={() => {
+          if (fileMentionKey) {
+            setDismissedFileMentionKey(fileMentionKey);
           }
-          items={modelDropdownItems.map((item) => ({
-            key: item.label,
-            label: item.label,
-            description: item.description,
-            selected: item.selected,
-          }))}
-          activeIndex={modelDropdownIndex}
-          activeColor="#229ac3"
-          maxVisible={6}
-        />
-      ) : null}
-      {showFileMentionMenu ? (
-        <DropdownMenu
-          width={screenWidth}
-          title="Mention File"
-          helpText="Enter/Tab insert · Esc close"
-          emptyText={fileMentionToken?.query ? "No matching files" : "Type after @ to search files"}
-          items={fileMentionMatches.map((item) => ({
-            key: item.path,
-            label: item.path,
-            description: item.type === "directory" ? "directory" : "file",
-          }))}
-          activeIndex={fileMentionIndex}
-          activeColor="#229ac3"
-          maxVisible={8}
-          renderItem={(item, isActive) => (
-            <Box flexDirection="row" paddingX={1} gap={1}>
-              <Text color={isActive ? "#229ac3" : undefined}>{isActive ? "> " : "  "}</Text>
-              <Box flexGrow={1}>
-                <Text color={isActive ? "#229ac3" : undefined} wrap="truncate-end" bold={isActive}>
-                  {item.label}
-                </Text>
-              </Box>
-              {item.description ? (
-                <Box width={10} flexShrink={0}>
-                  <Text dimColor>{item.description}</Text>
-                </Box>
-              ) : null}
-            </Box>
-          )}
-        />
-      ) : null}
+        }}
+        onSelect={insertFileMentionSelection}
+      />
       <SlashCommandMenu width={screenWidth} items={slashMenu} activeIndex={menuIndex} />
       {!showFooterText && (
         <Box>
@@ -1066,10 +941,6 @@ export function formatSelectedSkillsStatus(skills: SkillInfo[]): string {
   return `⚡ ${names.join(", ")}`;
 }
 
-export function isSkillSelected(skills: SkillInfo[], skill: SkillInfo): boolean {
-  return skills.some((item) => item.name === skill.name);
-}
-
 export function addUniqueSkill(skills: SkillInfo[], skill: SkillInfo): SkillInfo[] {
   if (isSkillSelected(skills, skill)) {
     return skills;
@@ -1087,18 +958,6 @@ export function buildInitPromptSubmission(selectedSkills: SkillInfo[]): PromptSu
     imageUrls: [],
     selectedSkills: selectedSkills.length > 0 ? selectedSkills : undefined,
   };
-}
-
-export function getThinkingOptionIndex(
-  config: Pick<ModelConfigSelection, "thinkingEnabled" | "reasoningEffort">
-): number {
-  const index = MODEL_COMMAND_THINKING_OPTIONS.findIndex((option) => {
-    if (!config.thinkingEnabled) {
-      return !option.thinkingEnabled;
-    }
-    return option.thinkingEnabled && option.reasoningEffort === config.reasoningEffort;
-  });
-  return index >= 0 ? index : 0;
 }
 
 export function removeCurrentSlashToken(state: PromptBufferState): PromptBufferState {
@@ -1132,12 +991,15 @@ export function getPromptReturnKeyAction(key: Pick<InputKey, "return" | "shift" 
   return "submit";
 }
 
-export function renderBufferWithCursor(state: PromptBufferState, isFocused: boolean, placeholder?: string): string {
+export function renderBufferWithCursor(
+  state: PromptBufferState,
+  isFocused: boolean,
+  placeholder?: string,
+  validPastes?: Map<number, string>
+): string {
   const text = state.text || "";
   const cursor = Math.max(0, Math.min(state.cursor, text.length));
-  const before = text.slice(0, cursor);
-  const at = text[cursor];
-  const after = text.slice(cursor + 1);
+  const validIds = validPastes ?? new Map<number, string>();
 
   if (text.length === 0 && placeholder) {
     if (!isFocused) {
@@ -1146,15 +1008,106 @@ export function renderBufferWithCursor(state: PromptBufferState, isFocused: bool
     return renderCursorCell(" ") + chalk.dim(` ${placeholder}`);
   }
 
-  if (!isFocused) {
-    return text.endsWith("\n") ? `${text} ` : text;
+  if (text.length === 0) {
+    return isFocused ? renderCursorCell(" ") : "";
   }
 
-  if (typeof at === "undefined") {
-    return before + renderCursorCell(" ");
+  if (!isFocused) {
+    return highlightPasteMarkersInText(text, validIds);
   }
+
+  return renderFocusedText(text, cursor, validIds);
+}
+
+function highlightPasteMarkersInText(s: string, validIds: Map<number, string>): string {
+  if (!s.includes("[paste #")) return s;
+  PASTE_MARKER_REGEX.lastIndex = 0;
+  let result = "";
+  let pos = 0;
+  let match: RegExpExecArray | null;
+  while ((match = PASTE_MARKER_REGEX.exec(s)) !== null) {
+    result += s.slice(pos, match.index);
+    const id = Number.parseInt(match[1]!, 10);
+    result += validIds.has(id) ? chalk.yellow(match[0]) : match[0];
+    pos = match.index + match[0].length;
+  }
+  result += s.slice(pos);
+  return result.endsWith("\n") ? `${result} ` : result;
+}
+
+/**
+ * Render focused text with paste-marker highlighting and cursor insertion.
+ * Scans through the entire string in one pass, so the cursor can land
+ * anywhere (including inside or at the boundary of a paste marker) and the
+ * marker will still be highlighted correctly.
+ */
+function renderFocusedText(text: string, cursor: number, validIds: Map<number, string>): string {
+  let result = "";
+  let pos = 0;
+  PASTE_MARKER_REGEX.lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = PASTE_MARKER_REGEX.exec(text)) !== null) {
+    const markerStart = match.index;
+    const markerEnd = match.index + match[0].length;
+    const id = Number.parseInt(match[1]!, 10);
+    const isReal = validIds.has(id);
+
+    // 1. Non-marker segment before this marker.
+    result += renderTextSegmentWithCursor(text, pos, markerStart, cursor, false);
+    pos = markerStart;
+
+    // 2. Marker segment — highlighted only if it corresponds to a real paste.
+    result += renderTextSegmentWithCursor(text, pos, markerEnd, cursor, isReal);
+    pos = markerEnd;
+  }
+
+  // 3. Remainder after the last marker.
+  result += renderTextSegmentWithCursor(text, pos, text.length, cursor, false);
+
+  return result;
+}
+
+/**
+ * Render a segment of `text` from `start` to `end`.
+ * The cursor (if it falls inside this segment) is rendered as an inverse-video cell.
+ */
+function renderTextSegmentWithCursor(
+  text: string,
+  start: number,
+  end: number,
+  cursor: number,
+  highlighted: boolean
+): string {
+  if (start >= end) return "";
+
+  const segText = text.slice(start, end);
+  const cursorRel = cursor - start; // relative cursor position inside this segment
+
+  // Cursor not in this segment – just return the text.
+  if (cursorRel < 0 || cursorRel > segText.length) {
+    return highlighted ? chalk.yellow(segText) : segText;
+  }
+
+  // Cursor is exactly at `end` (which equals `segText.length`).
+  if (cursorRel === segText.length) {
+    return highlighted ? chalk.yellow(segText) + renderCursorCell(" ") : segText + renderCursorCell(" ");
+  }
+
+  // Cursor is somewhere inside the segment.
+  const at = segText[cursorRel];
+
   if (at === "\n") {
+    // Render newline as a space in the cursor cell, then output the actual newline.
+    const before = segText.slice(0, cursorRel);
+    const after = segText.slice(cursorRel + 1);
     return before + renderCursorCell(" ") + "\n" + after;
+  }
+
+  const before = segText.slice(0, cursorRel);
+  const after = segText.slice(cursorRel + 1);
+  if (highlighted) {
+    return chalk.yellow(before) + renderCursorCell(at) + chalk.yellow(after);
   }
   return before + renderCursorCell(at) + after;
 }

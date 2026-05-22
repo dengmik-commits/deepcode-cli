@@ -572,9 +572,10 @@ export class SessionManager {
     const toolCalls = Array.from(toolCallsByIndex.entries())
       .sort(([left], [right]) => left - right)
       .map(([, toolCall]) => toolCall);
+    const normalizedToolCalls = this.normalizeLlmToolCalls(toolCalls);
     const message: Record<string, unknown> = { content };
-    if (toolCalls.length > 0) {
-      message.tool_calls = toolCalls;
+    if (normalizedToolCalls) {
+      message.tool_calls = normalizedToolCalls;
     }
     if (reasoningContent.length > 0) {
       message.reasoning_content = reasoningContent;
@@ -902,20 +903,6 @@ The candidate skills are as follows:\n\n`;
     const signal = controller?.signal;
     this.throwIfAborted(signal);
 
-    if (userPrompt.text) {
-      const skills = await this.listSkills();
-      const skillNames = await this.identifyMatchingSkillNames(skills, userPrompt.text, { signal });
-      this.throwIfAborted(signal);
-      const skillSet = new Set(skillNames);
-      const matchedSkill = skills.filter((skill) => skillSet.has(skill.name));
-      if (Array.isArray(userPrompt.skills)) {
-        userPrompt.skills.push(...matchedSkill);
-      } else if (matchedSkill.length > 0) {
-        userPrompt.skills = matchedSkill;
-      }
-    }
-    userPrompt.skills = await this.normalizeSkills(userPrompt.skills);
-    this.throwIfAborted(signal);
     const sessionId = crypto.randomUUID();
     this.ensureFileHistorySession(sessionId);
     const now = new Date().toISOString();
@@ -978,6 +965,21 @@ The candidate skills are as follows:\n\n`;
     const userMessage = this.buildUserMessage(sessionId, userPrompt);
     this.appendSessionMessage(sessionId, userMessage);
 
+    if (userPrompt.text) {
+      const skills = await this.listSkills();
+      const skillNames = await this.identifyMatchingSkillNames(skills, userPrompt.text, { signal });
+      this.throwIfAborted(signal);
+      const skillSet = new Set(skillNames);
+      const matchedSkill = skills.filter((skill) => skillSet.has(skill.name));
+      if (Array.isArray(userPrompt.skills)) {
+        userPrompt.skills.push(...matchedSkill);
+      } else if (matchedSkill.length > 0) {
+        userPrompt.skills = matchedSkill;
+      }
+    }
+    userPrompt.skills = await this.normalizeSkills(userPrompt.skills);
+    this.throwIfAborted(signal);
+
     if (userPrompt.skills && userPrompt.skills.length > 0) {
       for (const skill of userPrompt.skills) {
         if (skill.isLoaded) {
@@ -1027,6 +1029,10 @@ ${skillMd}
 
     this.reportNewPrompt();
 
+    this.ensureFileHistorySession(sessionId);
+    const userMessage = this.buildUserMessage(sessionId, userPrompt);
+    this.appendSessionMessage(sessionId, userMessage);
+
     if (userPrompt.text) {
       const skills = await this.listSkills(sessionId);
       const skillNames = await this.identifyMatchingSkillNames(skills, userPrompt.text, { signal, sessionId });
@@ -1041,10 +1047,6 @@ ${skillMd}
     }
     userPrompt.skills = await this.normalizeSkills(userPrompt.skills, sessionId);
     this.throwIfAborted(signal);
-
-    this.ensureFileHistorySession(sessionId);
-    const userMessage = this.buildUserMessage(sessionId, userPrompt);
-    this.appendSessionMessage(sessionId, userMessage);
 
     if (userPrompt.skills && userPrompt.skills.length > 0) {
       for (const skill of userPrompt.skills) {
@@ -1186,7 +1188,7 @@ ${skillMd}
         const rawContent = message?.content;
         const content = typeof rawContent === "string" ? rawContent : "";
         const rawToolCalls = (message as { tool_calls?: unknown[] } | undefined)?.tool_calls ?? null;
-        toolCalls = Array.isArray(rawToolCalls) && rawToolCalls.length > 0 ? rawToolCalls : null;
+        toolCalls = this.normalizeLlmToolCalls(rawToolCalls);
         const rawThinking = (message as { reasoning_content?: unknown } | undefined)?.reasoning_content;
         const thinking = typeof rawThinking === "string" ? rawThinking : null;
         const refusal = (message as { refusal?: string } | undefined)?.refusal ?? null;
@@ -1904,6 +1906,33 @@ ${skillMd}
       updateTime: now,
       meta: toolCalls ? { asThinking: true } : undefined,
     };
+  }
+
+  private generateToolCallId(): string {
+    return crypto.randomBytes(16).toString("hex");
+  }
+
+  private normalizeLlmToolCalls(rawToolCalls: unknown[] | null | undefined): unknown[] | null {
+    if (!Array.isArray(rawToolCalls) || rawToolCalls.length === 0) {
+      return null;
+    }
+
+    return rawToolCalls.map((toolCall) => {
+      if (!toolCall || typeof toolCall !== "object" || Array.isArray(toolCall)) {
+        return toolCall;
+      }
+
+      const record = toolCall as Record<string, unknown>;
+      const id = typeof record.id === "string" ? record.id.trim() : "";
+      if (id) {
+        return toolCall;
+      }
+
+      return {
+        ...record,
+        id: this.generateToolCallId(),
+      };
+    });
   }
 
   private buildToolMessage(

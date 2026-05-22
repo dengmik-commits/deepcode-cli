@@ -4,6 +4,7 @@ import { execFileSync } from "node:child_process";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
+import { GitFileHistory } from "../common/file-history";
 import { SessionManager, type SessionMessage } from "../session";
 
 const originalFetch = globalThis.fetch;
@@ -1040,6 +1041,54 @@ test("Write tool advances file-history while preserving the user prompt checkpoi
   assert.equal(fs.existsSync(filePath), false);
 });
 
+test("Write checkpoints restore tool-touched files outside the workspace and leave unrelated files alone", async (t) => {
+  if (!hasGit()) {
+    t.skip("git is not available");
+    return;
+  }
+
+  const workspace = createTempDir("deepcode-write-outside-workspace-");
+  const outsideDir = createTempDir("deepcode-write-outside-target-");
+  const home = createTempDir("deepcode-write-outside-home-");
+  setHomeDir(home);
+
+  const outsideFilePath = path.join(outsideDir, "outside.txt");
+  const unrelatedWorkspaceFilePath = path.join(workspace, "unrelated.txt");
+  const manager = createMockedClientSessionManager(workspace, [
+    {
+      choices: [
+        {
+          message: {
+            content: "",
+            tool_calls: [
+              {
+                id: "call-write-outside",
+                type: "function",
+                function: {
+                  name: "write",
+                  arguments: JSON.stringify({ file_path: outsideFilePath, content: "outside\n" }),
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    createChatResponse("done", { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 }),
+  ]);
+
+  const sessionId = await manager.createSession({ text: "create an outside file" });
+  const userMessage = manager.listSessionMessages(sessionId).find((message) => message.role === "user");
+  assert.ok(userMessage?.checkpointHash);
+  assert.equal(fs.readFileSync(outsideFilePath, "utf8"), "outside\n");
+
+  fs.writeFileSync(unrelatedWorkspaceFilePath, "keep\n", "utf8");
+  manager.restoreSessionCode(sessionId, userMessage.id);
+
+  assert.equal(fs.existsSync(outsideFilePath), false);
+  assert.equal(fs.readFileSync(unrelatedWorkspaceFilePath, "utf8"), "keep\n");
+});
+
 test("missing git executable does not block sessions or Write tool calls", async () => {
   const workspace = createTempDir("deepcode-no-git-write-workspace-");
   const home = createTempDir("deepcode-no-git-write-home-");
@@ -1565,6 +1614,66 @@ test("Write tool params prefer file_path even when content appears first", () =>
   assert.equal(toolMessage.meta?.paramsMd, filePath);
 });
 
+test("LLM tool calls without ids receive generated 32 character ids", async () => {
+  const workspace = createTempDir("deepcode-tool-call-id-workspace-");
+  const home = createTempDir("deepcode-tool-call-id-home-");
+  setHomeDir(home);
+
+  const filePath = path.join(workspace, "note.txt");
+  fs.writeFileSync(filePath, "hello\n", "utf8");
+  const plan = "## Task List\n\n- [ ] Inspect current behavior";
+  const manager = createMockedClientSessionManager(workspace, [
+    {
+      choices: [
+        {
+          message: {
+            content: "",
+            tool_calls: [
+              {
+                id: "",
+                type: "function",
+                function: {
+                  name: "UpdatePlan",
+                  arguments: JSON.stringify({ plan, explanation: "Initial plan" }),
+                },
+              },
+              {
+                type: "function",
+                function: {
+                  name: "read",
+                  arguments: JSON.stringify({ file_path: filePath }),
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+    createChatResponse("done", { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 }),
+  ]);
+
+  const sessionId = await manager.createSession({ text: "inspect note" });
+  const assistantMessage = manager
+    .listSessionMessages(sessionId)
+    .find((message) => message.role === "assistant" && (message.messageParams as any)?.tool_calls);
+  const toolCalls = (assistantMessage?.messageParams as { tool_calls?: Array<{ id?: unknown }> } | null)?.tool_calls;
+
+  assert.equal(toolCalls?.length, 2);
+  assert.match(String(toolCalls?.[0]?.id), /^[0-9a-f]{32}$/);
+  assert.match(String(toolCalls?.[1]?.id), /^[0-9a-f]{32}$/);
+  assert.notEqual(toolCalls?.[0]?.id, toolCalls?.[1]?.id);
+
+  const toolMessages = manager.listSessionMessages(sessionId).filter((message) => message.role === "tool");
+  assert.deepEqual(
+    toolMessages.map((message) => (message.messageParams as { tool_call_id?: unknown } | null)?.tool_call_id),
+    toolCalls?.map((toolCall) => toolCall.id)
+  );
+
+  const readToolMessage = toolMessages.find((message) => JSON.parse(message.content ?? "{}").name === "read");
+  assert.equal((readToolMessage?.meta?.function as { name?: string } | undefined)?.name, "read");
+  assert.equal(readToolMessage?.meta?.paramsMd, "note.txt");
+});
+
 test("buildOpenAIMessages repairs mixed missing duplicate and orphan tool messages", () => {
   const manager = createSessionManager(process.cwd(), "machine-id-mixed-tool-badcase");
   const assistantMessage = (manager as any).buildAssistantMessage(
@@ -1892,7 +2001,7 @@ test("SessionManager streams chat completions and counts reasoning progress", as
   assert.equal(progressEvents[2]?.formattedTokens, "3");
 });
 
-test("SessionManager cancels skill matching before a session is created", async () => {
+test("SessionManager persists session and user message before skill matching is cancelled", async () => {
   const workspace = createTempDir("deepcode-skill-abort-workspace-");
   const home = createTempDir("deepcode-skill-abort-home-");
   setHomeDir(home);
@@ -1921,7 +2030,13 @@ test("SessionManager cancels skill matching before a session is created", async 
 
   await manager.handleUserPrompt({ text: "please use demo" });
 
-  assert.equal(manager.listSessions().length, 0);
+  // Session and user message are persisted before skill matching triggers an abort.
+  assert.equal(manager.listSessions().length, 1);
+  const [session] = manager.listSessions();
+  assert.equal(session?.status, "pending");
+  const messages = manager.listSessionMessages(session!.id);
+  const userMessage = messages.find((m) => m.role === "user");
+  assert.equal(userMessage?.content, "please use demo");
 });
 
 test("SessionManager treats OpenAI APIUserAbortError as interrupted", async () => {
@@ -2080,43 +2195,18 @@ function createFileHistoryCommit(
 ): string {
   const projectCode = workspace.replace(/[\\/]/g, "-").replace(/:/g, "");
   const gitDir = path.join(home, ".deepcode", "projects", projectCode, "file-history", ".git");
-  const branchRef = `refs/heads/${sessionId}`;
-  fs.mkdirSync(path.dirname(gitDir), { recursive: true });
-  if (!fs.existsSync(gitDir)) {
-    runFileHistoryGit(gitDir, workspace, ["init"]);
-  }
+  const fileHistory = new GitFileHistory(workspace, gitDir);
+  fileHistory.ensureSession(sessionId);
 
-  let parentHash = "";
-  try {
-    parentHash = runFileHistoryGit(gitDir, workspace, ["rev-parse", "--verify", `${branchRef}^{commit}`]).trim();
-  } catch {
-    const emptyTree = runFileHistoryGit(gitDir, workspace, ["mktree"], "");
-    parentHash = runFileHistoryGit(
-      gitDir,
-      workspace,
-      ["commit-tree", emptyTree.trim(), "-m", "initial checkpoint"],
-      "",
-      fileHistoryCommitEnv()
-    ).trim();
-    runFileHistoryGit(gitDir, workspace, ["update-ref", branchRef, parentHash]);
-  }
-  runFileHistoryGit(gitDir, workspace, ["read-tree", "--reset", branchRef]);
-
+  const filePaths: string[] = [];
   for (const [relativePath, content] of Object.entries(files)) {
     const filePath = path.join(workspace, relativePath);
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, content, "utf8");
+    filePaths.push(filePath);
   }
-  runFileHistoryGit(gitDir, workspace, ["add", "-f", "-A", "--", ...Object.keys(files)]);
-  const treeHash = runFileHistoryGit(gitDir, workspace, ["write-tree"]).trim();
-  const commitHash = runFileHistoryGit(
-    gitDir,
-    workspace,
-    ["commit-tree", treeHash, "-p", parentHash, "-m", "checkpoint"],
-    "",
-    fileHistoryCommitEnv()
-  ).trim();
-  runFileHistoryGit(gitDir, workspace, ["update-ref", branchRef, commitHash, parentHash]);
+  const commitHash = fileHistory.recordCheckpoint(sessionId, filePaths, "checkpoint");
+  assert.ok(commitHash);
   return commitHash;
 }
 
@@ -2137,16 +2227,6 @@ function runFileHistoryGit(
       stdio: ["pipe", "pipe", "pipe"],
     }
   );
-}
-
-function fileHistoryCommitEnv(): NodeJS.ProcessEnv {
-  return {
-    ...process.env,
-    GIT_AUTHOR_NAME: "DeepCode Test",
-    GIT_AUTHOR_EMAIL: "deepcode-test@example.com",
-    GIT_COMMITTER_NAME: "DeepCode Test",
-    GIT_COMMITTER_EMAIL: "deepcode-test@example.com",
-  };
 }
 
 function createSessionManager(projectRoot: string, machineId: string): SessionManager {
