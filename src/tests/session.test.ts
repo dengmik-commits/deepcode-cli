@@ -3089,6 +3089,67 @@ test("SessionManager resets active tokens to latest post-compaction response usa
   assert.equal(usagePerModel.total_reqs, 3);
 });
 
+test("SessionManager compactSession preserves previously compacted messages across repeated compactions", async () => {
+  const workspace = createTempDir("deepcode-compact-preserve-workspace-");
+  const home = createTempDir("deepcode-compact-preserve-home-");
+  setHomeDir(home);
+
+  // createSession consumes one response (activation), then each compactSession
+  // consumes one. Queue all three so no call runs dry.
+  const responses = [
+    createChatResponse("activation reply", {}),
+    createChatResponse("first summary", {}),
+    createChatResponse("second summary", {}),
+  ];
+  const manager = createMockedClientSessionManager(workspace, responses);
+
+  const sessionId = await manager.createSession({ text: "" });
+
+  // Seed a long conversation directly on disk so compactSession has a
+  // non-trivial window to compress on each pass.
+  const messagesPath = (manager as any).getSessionMessagesPath(sessionId) as string;
+  const seedMessages: SessionMessage[] = [];
+  for (let i = 0; i < 12; i += 1) {
+    seedMessages.push(buildTestMessage(`seed-user-${i}`, sessionId, "user", `user turn ${i}`));
+    seedMessages.push(buildTestMessage(`seed-asst-${i}`, sessionId, "assistant", `assistant turn ${i}`));
+  }
+  const existingRaw = fs.readFileSync(messagesPath, "utf8");
+  fs.writeFileSync(messagesPath, existingRaw + seedMessages.map((m) => JSON.stringify(m)).join("\n") + "\n", "utf8");
+
+  await manager.compactSession(sessionId);
+
+  const afterFirst = manager.listSessionMessages(sessionId);
+  const firstSummary = afterFirst.find((m) => m.content?.includes("first summary"));
+  assert.ok(firstSummary, "first summary should be present after the first compaction");
+  const firstCompactedCount = afterFirst.filter((m) => m.compacted).length;
+  assert.ok(firstCompactedCount > 0, "some messages should be marked compacted after the first pass");
+  // Capture a message compacted in the first pass. The old bug deleted exactly
+  // these (compacted:true) messages on the second compaction by overwriting the
+  // jsonl with only the non-compacted subset.
+  const firstCompactedMessage = afterFirst.find((m) => m.compacted);
+  assert.ok(firstCompactedMessage, "expected at least one compacted message after the first pass");
+
+  // Second compaction — before the fix this overwrote the jsonl with only the
+  // non-compacted subset, deleting every previously-compacted message.
+  await manager.compactSession(sessionId);
+
+  const afterSecond = manager.listSessionMessages(sessionId);
+  const firstSummaryStillPresent = afterSecond.find((m) => m.id === firstSummary.id);
+  assert.ok(firstSummaryStillPresent, "first summary must survive the second compaction (regression: data loss)");
+  const secondSummary = afterSecond.find((m) => m.content?.includes("second summary"));
+  assert.ok(secondSummary, "second summary should be present after the second compaction");
+  // The compacted message from the first pass must still be on disk.
+  const firstCompactedStillPresent = afterSecond.find((m) => m.id === firstCompactedMessage!.id);
+  assert.ok(
+    firstCompactedStillPresent?.compacted,
+    "previously compacted message must survive a second compaction (regression: data loss)"
+  );
+  assert.ok(
+    afterSecond.filter((m) => m.compacted).length >= firstCompactedCount,
+    "previously compacted messages must be retained after a second compaction"
+  );
+});
+
 test("SessionManager streams chat completions and counts reasoning progress", async () => {
   const workspace = createTempDir("deepcode-stream-workspace-");
   const home = createTempDir("deepcode-stream-home-");

@@ -1,0 +1,405 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner [ref=e6]:
+      - heading "Navigation Menu" [level=2] [ref=e7]
+      - generic [ref=e8]:
+        - link "Homepage" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - navigation "Global" [ref=e16]:
+            - list [ref=e17]:
+              - listitem [ref=e18]:
+                - button "Platform" [ref=e20] [cursor=pointer]:
+                  - text: Platform
+                  - img [ref=e21]
+              - listitem [ref=e23]:
+                - button "Solutions" [ref=e25] [cursor=pointer]:
+                  - text: Solutions
+                  - img [ref=e26]
+              - listitem [ref=e28]:
+                - button "Resources" [ref=e30] [cursor=pointer]:
+                  - text: Resources
+                  - img [ref=e31]
+              - listitem [ref=e33]:
+                - button "Open Source" [ref=e35] [cursor=pointer]:
+                  - text: Open Source
+                  - img [ref=e36]
+              - listitem [ref=e38]:
+                - button "Enterprise" [ref=e40] [cursor=pointer]:
+                  - text: Enterprise
+                  - img [ref=e41]
+              - listitem [ref=e43]:
+                - link "Pricing" [ref=e44] [cursor=pointer]:
+                  - /url: https://github.com/pricing
+                  - generic [ref=e45]: Pricing
+          - generic [ref=e46]:
+            - button "Search or jump to…" [ref=e49] [cursor=pointer]:
+              - img [ref=e51]
+              - generic [ref=e53]: Search or jump to...
+              - img [ref=e55]
+            - link "Sign in" [ref=e59] [cursor=pointer]:
+              - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Flessweb%2Fdeepcode-cli%2Fpull%2F115
+            - link "Sign up" [ref=e60] [cursor=pointer]:
+              - /url: /signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E%2Fvoltron%2Fpull_requests_fragments%2Fpull_request_layout&source=header-repo&source_repo=lessweb%2Fdeepcode-cli
+            - button "Appearance settings" [ref=e63] [cursor=pointer]:
+              - img
+  - main [ref=e67]:
+    - generic [ref=e68]:
+      - generic [ref=e69]:
+        - generic [ref=e71]:
+          - img [ref=e72]
+          - link "lessweb" [ref=e75] [cursor=pointer]:
+            - /url: /lessweb
+          - generic [ref=e76]: /
+          - strong [ref=e77]:
+            - link "deepcode-cli" [ref=e78] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli
+          - generic [ref=e79]: Public
+        - generic [ref=e80]:
+          - list:
+            - listitem [ref=e81]:
+              - link "You must be signed in to change notification settings" [ref=e82] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e83]
+                - text: Notifications
+            - listitem [ref=e85]:
+              - link "Fork 70" [ref=e86] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e87]
+                - text: Fork
+                - generic "70" [ref=e89]
+            - listitem [ref=e90]:
+              - link "You must be signed in to star a repository" [ref=e92] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e93]
+                - text: Star
+                - generic "859 users starred this repository" [ref=e95]: "859"
+      - navigation "Repository" [ref=e96]:
+        - list [ref=e97]:
+          - listitem [ref=e98]:
+            - link "Code" [ref=e99] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli
+              - img [ref=e100]
+              - generic [ref=e102]: Code
+          - listitem [ref=e103]:
+            - link "Issues 19" [ref=e104] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/issues
+              - img [ref=e105]
+              - generic [ref=e108]: Issues
+              - generic "19" [ref=e109]
+          - listitem [ref=e110]:
+            - link "Pull requests 6" [ref=e111] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/pulls
+              - img [ref=e112]
+              - generic [ref=e114]: Pull requests
+              - generic "6" [ref=e115]
+          - listitem [ref=e116]:
+            - link "Actions" [ref=e117] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/actions
+              - img [ref=e118]
+              - generic [ref=e120]: Actions
+          - listitem [ref=e121]:
+            - link "Projects" [ref=e122] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/projects
+              - img [ref=e123]
+              - generic [ref=e125]: Projects
+          - listitem [ref=e126]:
+            - link "Security and quality" [ref=e127] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/security
+              - img [ref=e128]
+              - generic [ref=e130]: Security and quality
+          - listitem [ref=e131]:
+            - link "Insights" [ref=e132] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/pulse
+              - img [ref=e133]
+              - generic [ref=e135]: Insights
+    - generic [ref=e142]:
+      - generic [ref=e145]:
+        - 'heading "feat: markdown 表格闭合边框渲染 + CJK/emoji 宽度适配 #115" [level=1] [ref=e147]':
+          - text: "feat: markdown 表格闭合边框渲染 + CJK/emoji 宽度适配"
+          - generic [ref=e149]: "#115"
+        - generic [ref=e151]:
+          - generic [ref=e153]:
+            - img "Pull request" [ref=e154]
+            - text: Open
+          - generic [ref=e157]:
+            - link "dengmik-commits" [ref=e158] [cursor=pointer]:
+              - /url: /dengmik-commits
+            - text: wants to merge 2 commits into
+            - generic [ref=e159]:
+              - link "lessweb:main" [ref=e160] [cursor=pointer]:
+                - /url: /lessweb/deepcode-cli/tree/main
+              - generic [ref=e161]: from
+              - generic [ref=e162]:
+                - link "dengmik-commits:feat/table-render" [ref=e163] [cursor=pointer]:
+                  - /url: /dengmik-commits/deepcode-cli/tree/feat/table-render
+                - button "Copy head branch name to clipboard" [ref=e164] [cursor=pointer]:
+                  - img [ref=e165]
+        - generic [ref=e168]:
+          - generic [ref=e170]:
+            - generic [ref=e171]: "+304"
+            - generic [ref=e172]: "-39"
+            - generic [ref=e173]: "Lines changed: 304 additions & 39 deletions"
+          - navigation "Pull request navigation tabs" [ref=e182]:
+            - tablist [ref=e183]:
+              - tab "Conversation (0)" [selected] [ref=e184] [cursor=pointer]:
+                - img [ref=e185]
+                - text: Conversation
+                - generic [ref=e187]: "0"
+                - generic [ref=e188]: (0)
+              - tab "Commits (2)" [ref=e189] [cursor=pointer]:
+                - img [ref=e190]
+                - text: Commits
+                - generic [ref=e192]: "2"
+                - generic [ref=e193]: (2)
+              - tab "Checks (9)" [ref=e194] [cursor=pointer]:
+                - img [ref=e195]
+                - text: Checks
+                - generic [ref=e197]: "9"
+                - generic [ref=e198]: (9)
+              - tab "Files changed (4)" [ref=e199] [cursor=pointer]:
+                - img [ref=e200]
+                - text: Files changed
+                - generic [ref=e202]: "4"
+                - generic [ref=e203]: (4)
+      - generic [ref=e208]:
+        - generic [ref=e210]:
+          - heading "Conversation" [level=2] [ref=e211]
+          - generic [ref=e212]:
+            - generic [ref=e213]:
+              - generic [ref=e215]:
+                - link "@dengmik-commits" [ref=e216] [cursor=pointer]:
+                  - /url: /dengmik-commits
+                  - img "@dengmik-commits" [ref=e217]
+                - generic [ref=e219]:
+                  - generic [ref=e220]:
+                    - generic [ref=e221]:
+                      - group [ref=e223]:
+                        - button "Show options" [ref=e224] [cursor=pointer]:
+                          - img "Show options" [ref=e227]
+                      - generic "This user has previously committed to the deepcode-cli repository." [ref=e230]:
+                        - generic [ref=e231]: Contributor
+                    - heading "dengmik-commits commented May 23, 20269 minutes ago •" [level=3] [ref=e232]:
+                      - generic [ref=e233]:
+                        - strong [ref=e234]:
+                          - link "dengmik-commits" [ref=e235] [cursor=pointer]:
+                            - /url: /dengmik-commits
+                        - text: commented
+                        - link "May 23, 20269 minutes ago" [ref=e236] [cursor=pointer]:
+                          - /url: "#issue-4508014330"
+                        - generic [ref=e237]:
+                          - generic [ref=e238]: •
+                          - group [ref=e239]:
+                            - button "edited" [ref=e240] [cursor=pointer]:
+                              - generic [ref=e241]:
+                                - text: edited
+                                - img [ref=e242]
+                  - generic [ref=e247]:
+                    - heading "概述" [level=2] [ref=e248]
+                    - paragraph [ref=e249]:
+                      - text: 当前 deepcode-cli 的 markdown 表格仅原样输出
+                      - code [ref=e250]: "| col1 | col2 |"
+                      - text: 分隔符，排版简陋、宽度溢出时自动被 Ink 断行导致错乱。本次改动增加了闭合边框表格渲染、CJK 宽字符和 emoji 视觉宽度计算、单元格内自动换行，以及表格与普通文本分离渲染。
+                    - heading "效果" [level=2] [ref=e251]
+                    - paragraph [ref=e252]:
+                      - link:
+                        - /url: https://github.com/dengmik-commits/deepcode-cli/blob/feat/table-render/Screenshot_2026-05-23_195028.png?raw=true
+                    - heading "变更" [level=2] [ref=e253]
+                    - heading "src/ui/components/MessageView/markdown.ts" [level=3] [ref=e254]:
+                      - code [ref=e255]: src/ui/components/MessageView/markdown.ts
+                    - list [ref=e256]:
+                      - listitem [ref=e257]:
+                        - text: 新增
+                        - code [ref=e258]: visualWidth(text)
+                        - text: — 按终端列宽计算字符视觉宽度（CJK 字符、全角、emoji = 2 列，ASCII = 1 列）
+                      - listitem [ref=e259]:
+                        - text: 新增
+                        - code [ref=e260]: splitTableBlocks(text)
+                        - text: — 从文本中检测和解析 markdown 表格（
+                        - code [ref=e261]: "| col | col |"
+                        - text: +
+                        - code [ref=e262]: "---|---"
+                        - text: ）
+                      - listitem [ref=e263]:
+                        - text: 新增
+                        - code [ref=e264]: renderTableBorder(rows, maxWidth)
+                        - text: — 渲染闭合边框表格：
+                        - list [ref=e265]:
+                          - listitem [ref=e266]: 基于视觉宽度的列宽计算
+                          - listitem [ref=e267]:
+                            - text: 列宽分配：窄列（
+                            - code [ref=e268]: "#"
+                            - text: 、状态、评论、日期）优先压缩，内容列保有最少 12 字符
+                          - listitem [ref=e269]: 单元格内逐字符自动换行，满格时在最后一个空格处截断
+                      - listitem [ref=e270]:
+                        - text: 新增
+                        - code [ref=e271]: renderMarkdownSegments(text, maxWidth)
+                        - text: — 将文本拆分为
+                        - code [ref=e272]: text
+                        - text: /
+                        - code [ref=e273]: table
+                        - text: /
+                        - code [ref=e274]: code
+                        - text: 分段
+                      - listitem [ref=e275]:
+                        - code [ref=e276]: renderMarkdown()
+                        - text: 委托给
+                        - code [ref=e277]: renderMarkdownSegments()
+                        - text: （向后兼容）
+                    - heading "src/ui/components/MessageView/index.tsx" [level=3] [ref=e278]:
+                      - code [ref=e279]: src/ui/components/MessageView/index.tsx
+                    - list [ref=e280]:
+                      - listitem [ref=e281]:
+                        - text: 内容渲染改用
+                        - code [ref=e282]: renderMarkdownSegments()
+                        - text: 返回的分段数组
+                      - listitem [ref=e283]:
+                        - strong [ref=e284]: 表格
+                        - text: 用
+                        - code [ref=e285]: <Text wrap="truncate-end">
+                        - text: 渲染，彻底杜绝 Ink 在单元格空格处断行
+                      - listitem [ref=e286]:
+                        - strong [ref=e287]: 普通文本
+                        - text: 用
+                        - code [ref=e288]: <Text>
+                        - text: 默认 wrap，保持正常折行
+                    - heading "src/ui/index.ts" [level=3] [ref=e289]:
+                      - code [ref=e290]: src/ui/index.ts
+                    - list [ref=e291]:
+                      - listitem [ref=e292]:
+                        - text: 导出
+                        - code [ref=e293]: renderMarkdownSegments
+                    - heading "验证" [level=2] [ref=e294]
+                    - generic [ref=e295]:
+                      - code [ref=e297]: "npm run typecheck # ✅ 零错误 npm run bundle # ✅ dist/cli.js"
+                      - button "Copy code to clipboard" [ref=e299] [cursor=pointer]:
+                        - img [ref=e300]
+              - generic [ref=e303]:
+                - generic [ref=e307]:
+                  - img [ref=e309]
+                  - generic [ref=e314]:
+                    - link "@dengmik-commits" [ref=e317] [cursor=pointer]:
+                      - /url: /dengmik-commits
+                      - img "@dengmik-commits" [ref=e318]
+                    - generic [ref=e319]:
+                      - code [ref=e320]:
+                        - 'link "feat: add closed-border markdown table rendering with CJK/emoji support" [ref=e321] [cursor=pointer]':
+                          - /url: /lessweb/deepcode-cli/pull/115/commits/928551e127b0df5f77b44aaee030863f838406e0
+                      - button "Commit message body" [ref=e323] [cursor=pointer]: …
+                    - group [ref=e327]:
+                      - generic "9 / 9 checks OK" [ref=e328] [cursor=pointer]:
+                        - img "9 / 9 checks OK" [ref=e329]
+                    - code [ref=e332]:
+                      - link "928551e" [ref=e333] [cursor=pointer]:
+                        - /url: /lessweb/deepcode-cli/pull/115/commits/928551e127b0df5f77b44aaee030863f838406e0
+                - generic [ref=e335]:
+                  - img [ref=e337]
+                  - generic [ref=e339]:
+                    - link "@dengmik-commits" [ref=e340] [cursor=pointer]:
+                      - /url: /dengmik-commits
+                      - img "@dengmik-commits" [ref=e341]
+                    - link "dengmik-commits" [ref=e342] [cursor=pointer]:
+                      - /url: /dengmik-commits
+                    - link "force-pushed" [ref=e343] [cursor=pointer]:
+                      - /url: /lessweb/deepcode-cli/compare/a717ff7f85330e83b03e28424570a558a470d5f7..928551e127b0df5f77b44aaee030863f838406e0
+                    - text: the
+                    - generic [ref=e345]: feat/table-render
+                    - text: branch from
+                    - link "a717ff7" [ref=e346] [cursor=pointer]:
+                      - /url: /lessweb/deepcode-cli/commit/a717ff7f85330e83b03e28424570a558a470d5f7
+                      - code [ref=e347]: a717ff7
+                    - text: to
+                    - link "928551e" [ref=e348] [cursor=pointer]:
+                      - /url: /lessweb/deepcode-cli/commit/928551e127b0df5f77b44aaee030863f838406e0
+                      - code [ref=e349]: 928551e
+                    - link "Compare" [ref=e350] [cursor=pointer]:
+                      - /url: /lessweb/deepcode-cli/compare/a717ff7f85330e83b03e28424570a558a470d5f7..928551e127b0df5f77b44aaee030863f838406e0
+                      - generic [ref=e352]: Compare
+                    - link "May 23, 2026 12:034 minutes ago" [ref=e353] [cursor=pointer]:
+                      - /url: "#event-25881964947"
+                - generic [ref=e357]:
+                  - img [ref=e359]
+                  - generic [ref=e364]:
+                    - link "@dengmik-commits" [ref=e367] [cursor=pointer]:
+                      - /url: /dengmik-commits
+                      - img "@dengmik-commits" [ref=e368]
+                    - code [ref=e370]:
+                      - link "add screenshot" [ref=e371] [cursor=pointer]:
+                        - /url: /lessweb/deepcode-cli/pull/115/commits/809670952601f7dedf738008190b9d8d84054491
+                    - group [ref=e375]:
+                      - generic "8 / 9 checks OK" [ref=e376] [cursor=pointer]:
+                        - img "8 / 9 checks OK" [ref=e377]
+                    - code [ref=e380]:
+                      - link "8096709" [ref=e381] [cursor=pointer]:
+                        - /url: /lessweb/deepcode-cli/pull/115/commits/809670952601f7dedf738008190b9d8d84054491
+            - generic [ref=e385]:
+              - link "Sign up for free" [ref=e386] [cursor=pointer]:
+                - /url: /join?source=comment-repo
+              - strong [ref=e387]: to join this conversation on GitHub
+              - text: . Already have an account?
+              - link "Sign in to comment" [ref=e388] [cursor=pointer]:
+                - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Flessweb%2Fdeepcode-cli%2Fpull%2F115
+        - generic [ref=e392]:
+          - form "Select reviewers" [ref=e394]:
+            - heading "Reviewers" [level=3] [ref=e395]
+            - text: No reviews
+          - form "Select assignees" [ref=e397]:
+            - heading "Assignees" [level=3] [ref=e398]
+            - text: No one assigned
+          - generic [ref=e399]:
+            - heading "Labels" [level=3] [ref=e400]
+            - generic [ref=e401]: None yet
+          - form "Select projects" [ref=e403]:
+            - heading "Projects" [level=3] [ref=e404]
+            - text: None yet
+          - form "Select milestones" [ref=e406]:
+            - heading "Milestone" [level=3] [ref=e407]
+            - text: No milestone
+          - form "Link issues" [ref=e413]:
+            - heading "Development" [level=3] [ref=e414]
+            - paragraph [ref=e415]: Successfully merging this pull request may close these issues.
+            - paragraph [ref=e417]: None yet
+          - generic [ref=e419]:
+            - heading "1 participant" [level=3] [ref=e420]
+            - link "@dengmik-commits" [ref=e422] [cursor=pointer]:
+              - /url: /dengmik-commits
+              - img "@dengmik-commits" [ref=e423]
+  - contentinfo [ref=e424]:
+    - heading "Footer" [level=2] [ref=e425]
+    - generic [ref=e426]:
+      - generic [ref=e427]:
+        - link "GitHub Homepage" [ref=e428] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e429]
+        - generic [ref=e431]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e432]:
+        - heading "Footer navigation" [level=3] [ref=e433]
+        - list "Footer navigation" [ref=e434]:
+          - listitem [ref=e435]:
+            - link "Terms" [ref=e436] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e437]:
+            - link "Privacy" [ref=e438] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e439]:
+            - link "Security" [ref=e440] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e441]:
+            - link "Status" [ref=e442] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e443]:
+            - link "Community" [ref=e444] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e445]:
+            - link "Docs" [ref=e446] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e447]:
+            - link "Contact" [ref=e448] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e449]:
+            - button "Manage cookies" [ref=e451] [cursor=pointer]
+          - listitem [ref=e452]:
+            - button "Do not share my personal information" [ref=e454] [cursor=pointer]

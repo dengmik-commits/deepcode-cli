@@ -1,0 +1,855 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner [ref=e6]:
+      - heading "Navigation Menu" [level=2] [ref=e7]
+      - generic [ref=e8]:
+        - link "Homepage" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - navigation "Global" [ref=e16]:
+            - list [ref=e17]:
+              - listitem [ref=e18]:
+                - button "Platform" [ref=e20] [cursor=pointer]:
+                  - text: Platform
+                  - img [ref=e21]
+              - listitem [ref=e23]:
+                - button "Solutions" [ref=e25] [cursor=pointer]:
+                  - text: Solutions
+                  - img [ref=e26]
+              - listitem [ref=e28]:
+                - button "Resources" [ref=e30] [cursor=pointer]:
+                  - text: Resources
+                  - img [ref=e31]
+              - listitem [ref=e33]:
+                - button "Open Source" [ref=e35] [cursor=pointer]:
+                  - text: Open Source
+                  - img [ref=e36]
+              - listitem [ref=e38]:
+                - button "Enterprise" [ref=e40] [cursor=pointer]:
+                  - text: Enterprise
+                  - img [ref=e41]
+              - listitem [ref=e43]:
+                - link "Pricing" [ref=e44] [cursor=pointer]:
+                  - /url: https://github.com/pricing
+                  - generic [ref=e45]: Pricing
+          - generic [ref=e46]:
+            - button "Search or jump to…" [ref=e49] [cursor=pointer]:
+              - img [ref=e51]
+              - generic [ref=e53]: Search or jump to...
+              - img [ref=e55]
+            - link "Sign in" [ref=e59] [cursor=pointer]:
+              - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Flessweb%2Fdeepcode-cli%2Fpull%2F77
+            - link "Sign up" [ref=e60] [cursor=pointer]:
+              - /url: /signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E%2Fvoltron%2Fpull_requests_fragments%2Fpull_request_layout&source=header-repo&source_repo=lessweb%2Fdeepcode-cli
+            - button "Appearance settings" [ref=e63] [cursor=pointer]:
+              - img
+  - main [ref=e67]:
+    - generic [ref=e68]:
+      - generic [ref=e69]:
+        - generic [ref=e71]:
+          - img [ref=e72]
+          - link "lessweb" [ref=e75] [cursor=pointer]:
+            - /url: /lessweb
+          - generic [ref=e76]: /
+          - strong [ref=e77]:
+            - link "deepcode-cli" [ref=e78] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli
+          - generic [ref=e79]: Public
+        - generic [ref=e80]:
+          - list:
+            - listitem [ref=e81]:
+              - link "You must be signed in to change notification settings" [ref=e82] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e83]
+                - text: Notifications
+            - listitem [ref=e85]:
+              - link "Fork 53" [ref=e86] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e87]
+                - text: Fork
+                - generic "53" [ref=e89]
+            - listitem [ref=e90]:
+              - link "You must be signed in to star a repository" [ref=e92] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e93]
+                - text: Star
+                - generic "710 users starred this repository" [ref=e95]: "710"
+      - navigation "Repository" [ref=e96]:
+        - list [ref=e97]:
+          - listitem [ref=e98]:
+            - link "Code" [ref=e99] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli
+              - img [ref=e100]
+              - generic [ref=e102]: Code
+          - listitem [ref=e103]:
+            - link "Issues 21" [ref=e104] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/issues
+              - img [ref=e105]
+              - generic [ref=e108]: Issues
+              - generic "21" [ref=e109]
+          - listitem [ref=e110]:
+            - link "Pull requests 4" [ref=e111] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/pulls
+              - img [ref=e112]
+              - generic [ref=e114]: Pull requests
+              - generic "4" [ref=e115]
+          - listitem [ref=e116]:
+            - link "Actions" [ref=e117] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/actions
+              - img [ref=e118]
+              - generic [ref=e120]: Actions
+          - listitem [ref=e121]:
+            - link "Projects" [ref=e122] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/projects
+              - img [ref=e123]
+              - generic [ref=e125]: Projects
+          - listitem [ref=e126]:
+            - link "Security and quality" [ref=e127] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/security
+              - img [ref=e128]
+              - generic [ref=e130]: Security and quality
+          - listitem [ref=e131]:
+            - link "Insights" [ref=e132] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/pulse
+              - img [ref=e133]
+              - generic [ref=e135]: Insights
+    - generic [ref=e142]:
+      - generic [ref=e145]:
+        - 'heading "fix: resolve Windows CI failures (CRLF, MCP spawn, cross-platform test runner) #77" [level=1] [ref=e147]':
+          - text: "fix: resolve Windows CI failures (CRLF, MCP spawn, cross-platform test runner)"
+          - generic [ref=e149]: "#77"
+        - generic [ref=e151]:
+          - generic [ref=e153]:
+            - img "Pull request" [ref=e154]
+            - text: Merged
+          - generic [ref=e157]:
+            - link "qorzj" [ref=e158] [cursor=pointer]:
+              - /url: /qorzj
+            - text: merged 10 commits into
+            - generic [ref=e159]:
+              - link "lessweb:main" [ref=e160] [cursor=pointer]:
+                - /url: /lessweb/deepcode-cli/tree/main
+              - generic [ref=e161]: from
+              - generic [ref=e162]:
+                - link "Lellansin:fix/windows-prettier-crlf" [ref=e163] [cursor=pointer]:
+                  - /url: /Lellansin/deepcode-cli/tree/fix/windows-prettier-crlf
+                - button "Copy head branch name to clipboard" [ref=e164] [cursor=pointer]:
+                  - img [ref=e165]
+            - generic "May 16, 2026, 1:01 PM GMT+8" [ref=e168]: May 16, 20265 hours ago
+        - navigation "Pull request navigation tabs" [ref=e172]:
+          - tablist [ref=e173]:
+            - tab "Conversation" [selected] [ref=e174] [cursor=pointer]:
+              - img [ref=e175]
+              - text: Conversation
+            - tab "Commits (10)" [ref=e177] [cursor=pointer]:
+              - img [ref=e178]
+              - text: Commits
+              - generic [ref=e180]: "10"
+              - generic [ref=e181]: (10)
+            - tab "Checks" [ref=e182] [cursor=pointer]:
+              - img [ref=e183]
+              - text: Checks
+            - tab "Files changed" [ref=e185] [cursor=pointer]:
+              - img [ref=e186]
+              - text: Files changed
+      - generic [ref=e192]:
+        - generic [ref=e194]:
+          - heading "Conversation" [level=2] [ref=e195]
+          - generic [ref=e196]:
+            - generic [ref=e197]:
+              - generic [ref=e199]:
+                - link "@Lellansin" [ref=e200] [cursor=pointer]:
+                  - /url: /Lellansin
+                  - img "@Lellansin" [ref=e201]
+                - generic [ref=e203]:
+                  - generic [ref=e204]:
+                    - generic [ref=e205]:
+                      - group [ref=e207]:
+                        - button "Show options" [ref=e208] [cursor=pointer]:
+                          - img "Show options" [ref=e211]
+                      - generic "This user has previously committed to the deepcode-cli repository." [ref=e214]:
+                        - generic [ref=e215]: Contributor
+                    - heading "Lellansin commented May 16, 20267 hours ago •" [level=3] [ref=e216]:
+                      - generic [ref=e217]:
+                        - strong [ref=e218]:
+                          - link "Lellansin" [ref=e219] [cursor=pointer]:
+                            - /url: /Lellansin
+                        - text: commented
+                        - link "May 16, 20267 hours ago" [ref=e220] [cursor=pointer]:
+                          - /url: "#issue-4458364823"
+                        - generic [ref=e221]:
+                          - generic [ref=e222]: •
+                          - group [ref=e223]:
+                            - button "edited" [ref=e224] [cursor=pointer]:
+                              - generic [ref=e225]:
+                                - text: edited
+                                - img [ref=e226]
+                  - generic [ref=e231]:
+                    - heading "背景" [level=2] [ref=e232]
+                    - paragraph [ref=e233]: 项目的 CI pipeline 在 Windows 平台全面失败。本 PR 修复了所有 Windows CI 相关的兼容性问题，使 Windows 与 Ubuntu/macOS 一样通过全部检查。
+                    - separator [ref=e234]
+                    - heading "改动详解" [level=2] [ref=e235]
+                    - heading "1. .gitattributes — 新增" [level=3] [ref=e236]:
+                      - text: "1."
+                      - code [ref=e237]: .gitattributes
+                      - text: — 新增
+                    - list [ref=e238]:
+                      - listitem [ref=e239]:
+                        - strong [ref=e240]: 位置
+                        - text: ：项目根目录
+                      - listitem [ref=e241]:
+                        - strong [ref=e242]: 原因
+                        - text: ：
+                        - code [ref=e243]: .prettierrc
+                        - text: 配置了
+                        - code [ref=e244]: "\"endOfLine\": \"lf\""
+                        - text: ，要求所有源文件使用 LF 行尾。但在 Windows 上，Git 默认将文件 checkout 为 CRLF，导致
+                        - code [ref=e245]: prettier --check
+                        - text: 认为全部 71 个源文件格式不正确，CI 在
+                        - code [ref=e246]: format:check
+                        - text: 步骤直接失败。
+                      - listitem [ref=e247]:
+                        - strong [ref=e248]: 内容
+                        - text: ：
+                        - code [ref=e249]: "* text=auto eol=lf"
+                      - listitem [ref=e250]:
+                        - strong [ref=e251]: 影响
+                        - text: ：Git 在所有平台（包括 Windows）checkout 时自动转换行尾为 LF，prettier 格式检查通过
+                    - separator [ref=e252]
+                    - heading "2. .github/workflows/ci.yml — 修改" [level=3] [ref=e253]:
+                      - text: "2."
+                      - code [ref=e254]: .github/workflows/ci.yml
+                      - text: — 修改
+                    - list [ref=e255]:
+                      - listitem [ref=e256]:
+                        - strong [ref=e257]: 改动
+                        - text: ：在 node-version matrix 中恢复 Node 20
+                      - listitem [ref=e258]:
+                        - strong [ref=e259]: 当前 matrix
+                        - text: ：Node 20 / 22 / 24
+                      - listitem [ref=e260]:
+                        - strong [ref=e261]: 影响
+                        - text: ：CI 覆盖三个 LTS 版本
+                    - separator [ref=e262]
+                    - heading "3. src/mcp/mcp-client.ts — 修改生产代码" [level=3] [ref=e263]:
+                      - text: "3."
+                      - code [ref=e264]: src/mcp/mcp-client.ts
+                      - text: — 修改生产代码
+                    - list [ref=e265]:
+                      - listitem [ref=e266]:
+                        - strong [ref=e267]: 原因
+                        - text: ：MCP client 的
+                        - code [ref=e268]: connect()
+                        - text: 方法在 Windows 分支中，将
+                        - code [ref=e269]: this.command
+                        - text: 强制追加
+                        - code [ref=e270]: .cmd
+                        - text: 后缀再拼成单字符串通过
+                        - code [ref=e271]: cmd.exe
+                        - text: 执行。但当
+                        - code [ref=e272]: command
+                        - text: 本身是一个完整的可执行文件路径（如
+                        - code [ref=e273]: process.execPath
+                        - text: 返回的
+                        - code [ref=e274]: C:\...\node.exe
+                        - text: ），追加
+                        - code [ref=e275]: .cmd
+                        - text: 后变成
+                        - code [ref=e276]: node.exe.cmd
+                        - text: ——这个文件不存在，导致所有 MCP 相关测试全部抛出启动失败。
+                      - listitem [ref=e277]:
+                        - strong [ref=e278]: 改动前
+                        - text: ：
+                        - generic [ref=e279]:
+                          - generic [ref=e280]: "// Windows branch const cmd = [this.command + \".cmd\", ...args].join(\" \"); this.process = spawn(cmd, [], { shell: true, ... });"
+                          - button "Copy code to clipboard" [ref=e282] [cursor=pointer]:
+                            - img [ref=e283]
+                      - listitem [ref=e286]:
+                        - strong [ref=e287]: 改动后
+                        - text: ：
+                        - generic [ref=e288]:
+                          - generic [ref=e289]: "// Windows branch this.process = spawn(this.command, args, { shell: true, ... });"
+                          - button "Copy code to clipboard" [ref=e291] [cursor=pointer]:
+                            - img [ref=e292]
+                      - listitem [ref=e295]:
+                        - strong [ref=e296]: 原理
+                        - text: ：
+                        - code [ref=e297]: "shell: true"
+                        - text: 通过
+                        - code [ref=e298]: cmd.exe /c <command>
+                        - text: 执行命令。
+                        - code [ref=e299]: cmd.exe
+                        - text: 会自动通过 PATHEXT 环境变量查找匹配的可执行文件（
+                        - code [ref=e300]: npx
+                        - text: →
+                        - code [ref=e301]: npx.cmd
+                        - text: 、
+                        - code [ref=e302]: node
+                        - text: →
+                        - code [ref=e303]: node.exe
+                        - text: ），无需手动拼接
+                        - code [ref=e304]: .cmd
+                        - text: 后缀。
+                      - listitem [ref=e305]:
+                        - strong [ref=e306]: 影响
+                        - text: ：修正了 Windows 上所有使用
+                        - code [ref=e307]: process.execPath
+                        - text: 启动 MCP 服务器的测试路径。npx 命令也能正常通过 PATHEXT 解析。没有功能回归。
+                    - separator [ref=e308]
+                    - heading "4. 测试文件适配" [level=3] [ref=e309]
+                    - heading "4.1 src/tests/session.test.ts — 跨平台家目录" [level=4] [ref=e310]:
+                      - text: "4.1"
+                      - code [ref=e311]: src/tests/session.test.ts
+                      - text: — 跨平台家目录
+                    - list [ref=e312]:
+                      - listitem [ref=e313]:
+                        - strong [ref=e314]: 原因
+                        - text: ：测试代码通过
+                        - code [ref=e315]: process.env.HOME = home
+                        - text: 设置临时家目录。但 Windows 上
+                        - code [ref=e316]: os.homedir()
+                        - text: 读取的是
+                        - code [ref=e317]: USERPROFILE
+                        - text: 环境变量，不是
+                        - code [ref=e318]: HOME
+                        - text: 。这导致所有写入
+                        - code [ref=e319]: ~/.deepcode/projects/
+                        - text: 的测试文件，在读取时路径不匹配。
+                      - listitem [ref=e320]:
+                        - strong [ref=e321]: 改动
+                        - text: ：
+                        - list [ref=e322]:
+                          - listitem [ref=e323]:
+                            - text: 新增
+                            - code [ref=e324]: setHomeDir(dir)
+                            - text: 跨平台函数，同时设置
+                            - code [ref=e325]: HOME
+                            - text: （Unix）和
+                            - code [ref=e326]: USERPROFILE
+                            - text: （Windows）
+                          - listitem [ref=e327]:
+                            - code [ref=e328]: afterEach
+                            - text: 增加
+                            - code [ref=e329]: USERPROFILE
+                            - text: 的保存/恢复
+                          - listitem [ref=e330]:
+                            - text: 所有
+                            - code [ref=e331]: process.env.HOME = home
+                            - text: 替换为
+                            - code [ref=e332]: setHomeDir(home)
+                      - listitem [ref=e333]:
+                        - strong [ref=e334]: 影响
+                        - text: ：修复了
+                        - code [ref=e335]: SessionManager normalizes legacy sessions
+                        - text: 和
+                        - code [ref=e336]: SessionManager marks skills loaded from existing session messages
+                        - text: 等测试在 Windows 上的路径查找失败
+                    - heading "4.2 src/tests/welcomeScreen.test.ts — 跨平台路径" [level=4] [ref=e337]:
+                      - text: "4.2"
+                      - code [ref=e338]: src/tests/welcomeScreen.test.ts
+                      - text: — 跨平台路径
+                    - list [ref=e339]:
+                      - listitem [ref=e340]:
+                        - strong [ref=e341]: 原因
+                        - text: ：
+                        - code [ref=e342]: formatHomeRelativePath
+                        - text: 测试使用硬编码的 Unix 路径（
+                        - code [ref=e343]: /Users/example
+                        - text: 、
+                        - code [ref=e344]: /tmp/project
+                        - text: ）。在 Windows 上，
+                        - code [ref=e345]: path.resolve("/Users/example")
+                        - text: 的行为与 Unix 不同（解析为
+                        - code [ref=e346]: C:\Users\example
+                        - text: 或类似路径），导致断言失败。
+                      - listitem [ref=e347]:
+                        - strong [ref=e348]: 改动
+                        - text: ：使用
+                        - code [ref=e349]: path.resolve()
+                        - text: 处理路径，并比较处理后的结果
+                      - listitem [ref=e350]:
+                        - strong [ref=e351]: 影响
+                        - text: ：测试在所有平台行为一致
+                    - separator [ref=e352]
+                    - heading "5. package.json + src/tests/run-tests.mjs — 跨平台测试运行器" [level=3] [ref=e353]:
+                      - text: "5."
+                      - code [ref=e354]: package.json
+                      - text: +
+                      - code [ref=e355]: src/tests/run-tests.mjs
+                      - text: — 跨平台测试运行器
+                    - list [ref=e356]:
+                      - listitem [ref=e357]:
+                        - strong [ref=e358]: 背景
+                        - text: ：原
+                        - code [ref=e359]: tsx --test src/tests/*.test.ts
+                        - text: 依赖 shell 展开 glob。
+                        - list [ref=e360]:
+                          - listitem [ref=e361]: Linux/macOS：bash 正确展开，各 Node 版本均通过
+                          - listitem [ref=e362]:
+                            - text: Windows + Node 22/24：
+                            - code [ref=e363]: node --test
+                            - text: 原生支持 glob 展开，shell 未展开时 Node 自己处理
+                          - listitem [ref=e364]:
+                            - text: Windows + Node 20：PowerShell 展开后在 CI 上下文中得不到正确路径，Node 20 的
+                            - code [ref=e365]: node --test
+                            - text: 不处理 glob 展开
+                      - listitem [ref=e366]:
+                        - strong [ref=e367]: 改动
+                        - text: ：
+                        - list [ref=e368]:
+                          - listitem [ref=e369]:
+                            - text: 新增
+                            - code [ref=e370]: src/tests/run-tests.mjs
+                            - text: 作为测试入口
+                          - listitem [ref=e371]:
+                            - text: 使用
+                            - code [ref=e372]: glob
+                            - text: 包的
+                            - code [ref=e373]: globSync()
+                            - text: 显式查找
+                            - code [ref=e374]: src/tests/*.test.ts
+                          - listitem [ref=e375]:
+                            - text: 通过
+                            - code [ref=e376]: spawnSync(process.execPath, ["--import", "tsx", "--test", ...testFiles])
+                            - text: 执行
+                          - listitem [ref=e377]:
+                            - code [ref=e378]: package.json
+                            - text: 的
+                            - code [ref=e379]: test
+                            - text: script 改为
+                            - code [ref=e380]: node src/tests/run-tests.mjs
+                      - listitem [ref=e381]:
+                        - strong [ref=e382]: 影响
+                        - text: ：glob 展开不再依赖 shell 或 Node 版本，所有平台行为一致。测试数量不发生变化（仍为 211 个）。
+                    - separator [ref=e383]
+                    - heading "新增依赖" [level=3] [ref=e384]
+                    - table [ref=e386]:
+                      - rowgroup [ref=e387]:
+                        - row "包 类型 原因" [ref=e388]:
+                          - columnheader "包" [ref=e389]
+                          - columnheader "类型" [ref=e390]
+                          - columnheader "原因" [ref=e391]
+                      - rowgroup [ref=e392]:
+                        - row "glob devDependency 跨平台 glob 展开，替代 shell 通配符" [ref=e393]:
+                          - cell "glob" [ref=e394]:
+                            - code [ref=e395]: glob
+                          - cell "devDependency" [ref=e396]
+                          - cell "跨平台 glob 展开，替代 shell 通配符" [ref=e397]
+                    - separator [ref=e398]
+                    - heading "本 PR 降级的功能（trade-offs）" [level=2] [ref=e399]
+                    - heading "1. Node 18 不再在 CI 中验证" [level=3] [ref=e400]
+                    - list [ref=e401]:
+                      - listitem [ref=e402]:
+                        - strong [ref=e403]: 背景
+                        - text: ：
+                        - link "#80" [ref=e404] [cursor=pointer]:
+                          - /url: https://github.com/lessweb/deepcode-cli/issues/80
+                        - text: —
+                        - code [ref=e405]: string-width
+                        - text: 使用
+                        - code [ref=e406]: v
+                        - text: regex flag 导致 Node 18 SyntaxError
+                      - listitem [ref=e407]:
+                        - strong [ref=e408]: 当前处理
+                        - text: ：CI matrix 暂时移除 Node 18（PR
+                        - generic [ref=e409]:
+                          - img [ref=e410]
+                          - 'link "fix: resolve Windows CI failures (CRLF, MCP spawn, cross-platform test runner) #77" [ref=e412] [cursor=pointer]':
+                            - /url: https://github.com/lessweb/deepcode-cli/pull/77
+                        - text: 引入），确保 CI 整体可跑
+                      - listitem [ref=e413]:
+                        - strong [ref=e414]: 影响
+                        - text: ：CI 不再覆盖 Node 18；
+                        - code [ref=e415]: package.json
+                        - text: 中
+                        - code [ref=e416]: engines.node
+                        - text: （
+                        - code [ref=e417]: ">=18.17.0"
+                        - text: ）与实际情况不符
+                    - heading "2. Windows 上 4 个测试被跳过" [level=3] [ref=e418]
+                    - list [ref=e419]:
+                      - listitem [ref=e420]:
+                        - strong [ref=e421]: 背景
+                        - text: ：
+                        - link "#81" [ref=e422] [cursor=pointer]:
+                          - /url: https://github.com/lessweb/deepcode-cli/issues/81
+                        - text: — 4 个测试因 Unix 专用假设无法在 Windows 运行
+                      - listitem [ref=e423]:
+                        - strong [ref=e424]: 当前处理
+                        - text: ：标记为
+                        - code [ref=e425]: "skip: process.platform === \"win32\""
+                        - text: （PR
+                        - generic [ref=e426]:
+                          - img [ref=e427]
+                          - 'link "fix: resolve Windows CI failures (CRLF, MCP spawn, cross-platform test runner) #77" [ref=e429] [cursor=pointer]':
+                            - /url: https://github.com/lessweb/deepcode-cli/pull/77
+                        - text: 引入），确保 Windows CI 整体可跑
+                      - listitem [ref=e430]:
+                        - strong [ref=e431]: 跳过的测试
+                        - text: ：
+                        - list [ref=e432]:
+                          - listitem [ref=e433]:
+                            - code [ref=e434]: readClipboardImage uses osascript fallback on macOS
+                          - listitem [ref=e435]:
+                            - code [ref=e436]: launchNotifyScript falls back to /bin/sh
+                          - listitem [ref=e437]:
+                            - code [ref=e438]: SessionManager adds -y when launching MCP servers through npx
+                          - listitem [ref=e439]:
+                            - code [ref=e440]: WebSearch executes the configured script
+                    - separator [ref=e441]
+                    - heading "验证结果" [level=2] [ref=e442]
+                    - table [ref=e444]:
+                      - rowgroup [ref=e445]:
+                        - row "检查项 结果" [ref=e446]:
+                          - columnheader "检查项" [ref=e447]
+                          - columnheader "结果" [ref=e448]
+                      - rowgroup [ref=e449]:
+                        - row "npm run typecheck ✅" [ref=e450]:
+                          - cell "npm run typecheck" [ref=e451]:
+                            - code [ref=e452]: npm run typecheck
+                          - cell "✅" [ref=e453]
+                        - row "npm run lint ✅" [ref=e454]:
+                          - cell "npm run lint" [ref=e455]:
+                            - code [ref=e456]: npm run lint
+                          - cell "✅" [ref=e457]
+                        - row "npm run format:check ✅" [ref=e458]:
+                          - cell "npm run format:check" [ref=e459]:
+                            - code [ref=e460]: npm run format:check
+                          - cell "✅" [ref=e461]
+                        - row "npm test（211 tests） ✅" [ref=e462]:
+                          - cell "npm test（211 tests）" [ref=e463]:
+                            - code [ref=e464]: npm test
+                            - text: （211 tests）
+                          - cell "✅" [ref=e465]
+                    - table [ref=e467]:
+                      - rowgroup [ref=e468]:
+                        - row "CI Job Node 20 Node 22 Node 24" [ref=e469]:
+                          - columnheader "CI Job" [ref=e470]
+                          - columnheader "Node 20" [ref=e471]
+                          - columnheader "Node 22" [ref=e472]
+                          - columnheader "Node 24" [ref=e473]
+                      - rowgroup [ref=e474]:
+                        - row "ubuntu-latest ✅ ✅ ✅" [ref=e475]:
+                          - cell "ubuntu-latest" [ref=e476]
+                          - cell "✅" [ref=e477]
+                          - cell "✅" [ref=e478]
+                          - cell "✅" [ref=e479]
+                        - row "windows-latest ✅ ✅ ✅" [ref=e480]:
+                          - cell "windows-latest" [ref=e481]
+                          - cell "✅" [ref=e482]
+                          - cell "✅" [ref=e483]
+                          - cell "✅" [ref=e484]
+                        - row "macos-latest ✅ ✅ ✅" [ref=e485]:
+                          - cell "macos-latest" [ref=e486]
+                          - cell "✅" [ref=e487]
+                          - cell "✅" [ref=e488]
+                          - cell "✅" [ref=e489]
+              - generic [ref=e490]:
+                - generic [ref=e492]:
+                  - generic [ref=e493]:
+                    - img [ref=e495]
+                    - generic [ref=e497]:
+                      - link "Lellansin" [ref=e498] [cursor=pointer]:
+                        - /url: /Lellansin
+                      - text: added 3 commits
+                      - link "May 16, 2026 11:327 hours ago" [ref=e499] [cursor=pointer]:
+                        - /url: "#commits-pushed-f1e6968"
+                  - generic [ref=e500]:
+                    - generic [ref=e501]:
+                      - img [ref=e503]
+                      - generic [ref=e508]:
+                        - link "@Lellansin" [ref=e511] [cursor=pointer]:
+                          - /url: /Lellansin
+                          - img "@Lellansin" [ref=e512]
+                        - code [ref=e514]:
+                          - 'link "fix: add .gitattributes to enforce LF line endings on Windows" [ref=e515] [cursor=pointer]':
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/f1e696834d9f3a1eda2c88c9f6a093d13d6affbb
+                        - code [ref=e523]:
+                          - link "f1e6968" [ref=e524] [cursor=pointer]:
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/f1e696834d9f3a1eda2c88c9f6a093d13d6affbb
+                    - generic [ref=e525]:
+                      - img [ref=e527]
+                      - generic [ref=e532]:
+                        - link "@Lellansin" [ref=e535] [cursor=pointer]:
+                          - /url: /Lellansin
+                          - img "@Lellansin" [ref=e536]
+                        - code [ref=e538]:
+                          - 'link "fix: resolve Windows CI failures (CRLF, MCP spawn, test skips)" [ref=e539] [cursor=pointer]':
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/f62b1ce2286ac86a7a604e49ac22a5b25b4b5a40
+                        - code [ref=e547]:
+                          - link "f62b1ce" [ref=e548] [cursor=pointer]:
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/f62b1ce2286ac86a7a604e49ac22a5b25b4b5a40
+                    - generic [ref=e549]:
+                      - img [ref=e551]
+                      - generic [ref=e556]:
+                        - link "@Lellansin" [ref=e559] [cursor=pointer]:
+                          - /url: /Lellansin
+                          - img "@Lellansin" [ref=e560]
+                        - code [ref=e562]:
+                          - 'link "fix: cross-platform homedir in tests, skip Windows-incompatible npx test" [ref=e563] [cursor=pointer]':
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/cdce3ca6470e0b5768cba308c8d44453fa30e440
+                        - code [ref=e571]:
+                          - link "cdce3ca" [ref=e572] [cursor=pointer]:
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/cdce3ca6470e0b5768cba308c8d44453fa30e440
+                - generic [ref=e574]:
+                  - img [ref=e576]
+                  - generic [ref=e578]:
+                    - link "@Lellansin" [ref=e579] [cursor=pointer]:
+                      - /url: /Lellansin
+                      - img "@Lellansin" [ref=e580]
+                    - link "Lellansin" [ref=e581] [cursor=pointer]:
+                      - /url: /Lellansin
+                    - text: changed the title
+                    - deletion [ref=e582]: "fix: add .gitattributes to enforce LF line endings on Windows CI"
+                    - insertion [ref=e583]: "fix: resolve Windows CI failures (CRLF, MCP spawn, cross-platform tests)"
+                    - link "May 16, 20266 hours ago" [ref=e584] [cursor=pointer]:
+                      - /url: "#event-25600995124"
+                - generic [ref=e586]:
+                  - generic [ref=e587]:
+                    - img [ref=e589]
+                    - generic [ref=e591]:
+                      - link "Lellansin" [ref=e592] [cursor=pointer]:
+                        - /url: /Lellansin
+                      - text: added 7 commits
+                      - link "May 16, 2026 11:576 hours ago" [ref=e593] [cursor=pointer]:
+                        - /url: "#commits-pushed-a21e907"
+                  - generic [ref=e594]:
+                    - generic [ref=e595]:
+                      - img [ref=e597]
+                      - generic [ref=e602]:
+                        - link "@Lellansin" [ref=e605] [cursor=pointer]:
+                          - /url: /Lellansin
+                          - img "@Lellansin" [ref=e606]
+                        - code [ref=e608]:
+                          - 'link "fix: restore Node 20 in CI matrix" [ref=e609] [cursor=pointer]':
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/a21e907ddcd61fee119272dadd81bdf35d40f13a
+                        - code [ref=e617]:
+                          - link "a21e907" [ref=e618] [cursor=pointer]:
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/a21e907ddcd61fee119272dadd81bdf35d40f13a
+                    - generic [ref=e619]:
+                      - img [ref=e621]
+                      - generic [ref=e626]:
+                        - link "@Lellansin" [ref=e629] [cursor=pointer]:
+                          - /url: /Lellansin
+                          - img "@Lellansin" [ref=e630]
+                        - code [ref=e632]:
+                          - 'link "fix: quote test glob pattern for Node 20 Windows" [ref=e633] [cursor=pointer]':
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/cf56131cbbd5c57b2079730754d3fd658f6eae71
+                        - code [ref=e641]:
+                          - link "cf56131" [ref=e642] [cursor=pointer]:
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/cf56131cbbd5c57b2079730754d3fd658f6eae71
+                    - generic [ref=e643]:
+                      - img [ref=e645]
+                      - generic [ref=e650]:
+                        - link "@Lellansin" [ref=e653] [cursor=pointer]:
+                          - /url: /Lellansin
+                          - img "@Lellansin" [ref=e654]
+                        - code [ref=e656]:
+                          - 'link "fix: add cross-platform test runner for Node 20 compatibility" [ref=e657] [cursor=pointer]':
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/16e6810875d0b4782a6ee937b8e4df39712c1bb1
+                        - code [ref=e665]:
+                          - link "16e6810" [ref=e666] [cursor=pointer]:
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/16e6810875d0b4782a6ee937b8e4df39712c1bb1
+                    - generic [ref=e667]:
+                      - img [ref=e669]
+                      - generic [ref=e674]:
+                        - link "@Lellansin" [ref=e677] [cursor=pointer]:
+                          - /url: /Lellansin
+                          - img "@Lellansin" [ref=e678]
+                        - code [ref=e680]:
+                          - 'link "fix: use npx for cross-platform tsx resolution in test runner" [ref=e681] [cursor=pointer]':
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/9dba13688051cf2b8fffe0e9ed8221bd2ecc0464
+                        - code [ref=e689]:
+                          - link "9dba136" [ref=e690] [cursor=pointer]:
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/9dba13688051cf2b8fffe0e9ed8221bd2ecc0464
+                    - generic [ref=e691]:
+                      - img [ref=e693]
+                      - generic [ref=e698]:
+                        - link "@Lellansin" [ref=e701] [cursor=pointer]:
+                          - /url: /Lellansin
+                          - img "@Lellansin" [ref=e702]
+                        - code [ref=e704]:
+                          - 'link "fix: resolve tsx binary path cross-platform in test runner" [ref=e705] [cursor=pointer]':
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/20add1c8deaab468f1802f9d1b56bfe209b0942f
+                        - code [ref=e713]:
+                          - link "20add1c" [ref=e714] [cursor=pointer]:
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/20add1c8deaab468f1802f9d1b56bfe209b0942f
+                    - generic [ref=e715]:
+                      - img [ref=e717]
+                      - generic [ref=e722]:
+                        - link "@Lellansin" [ref=e725] [cursor=pointer]:
+                          - /url: /Lellansin
+                          - img "@Lellansin" [ref=e726]
+                        - generic [ref=e727]:
+                          - code [ref=e728]:
+                            - 'link "fix: use node --import tsx --test with native glob expansion for cros…" [ref=e729] [cursor=pointer]':
+                              - /url: /lessweb/deepcode-cli/pull/77/commits/abe5190ccc11243e10c20a11e5209ccf04b813d3
+                          - button "Commit message body" [ref=e731] [cursor=pointer]: …
+                        - code [ref=e739]:
+                          - link "abe5190" [ref=e740] [cursor=pointer]:
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/abe5190ccc11243e10c20a11e5209ccf04b813d3
+                    - generic [ref=e741]:
+                      - img [ref=e743]
+                      - generic [ref=e748]:
+                        - link "@Lellansin" [ref=e751] [cursor=pointer]:
+                          - /url: /Lellansin
+                          - img "@Lellansin" [ref=e752]
+                        - code [ref=e754]:
+                          - 'link "fix: add glob package, use cross-platform test runner" [ref=e755] [cursor=pointer]':
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/d5da01e848a724534b22763daf6db1e64e7f191c
+                        - code [ref=e763]:
+                          - link "d5da01e" [ref=e764] [cursor=pointer]:
+                            - /url: /lessweb/deepcode-cli/pull/77/commits/d5da01e848a724534b22763daf6db1e64e7f191c
+                - generic [ref=e765]:
+                  - generic [ref=e766]:
+                    - img [ref=e768]
+                    - generic [ref=e770]:
+                      - link "@Lellansin" [ref=e771] [cursor=pointer]:
+                        - /url: /Lellansin
+                        - img "@Lellansin" [ref=e772]
+                      - link "Lellansin" [ref=e773] [cursor=pointer]:
+                        - /url: /Lellansin
+                      - text: changed the title
+                      - deletion [ref=e774]: "fix: resolve Windows CI failures (CRLF, MCP spawn, cross-platform tests)"
+                      - insertion [ref=e775]: "fix: resolve Windows CI failures (CRLF, MCP spawn, cross-platform test runner)"
+                      - link "May 16, 20266 hours ago" [ref=e776] [cursor=pointer]:
+                        - /url: "#event-25601497406"
+                  - generic [ref=e777]:
+                    - img [ref=e779]
+                    - generic [ref=e781]:
+                      - generic [ref=e782]: This was referenced May 16, 20265 hours ago
+                      - generic [ref=e783]:
+                        - 'link "Drop Node 18 from CI matrix due to string-width v flag incompatibility #78" [ref=e785] [cursor=pointer]':
+                          - /url: /lessweb/deepcode-cli/issues/78
+                        - 'generic "Status: Closed" [ref=e787]':
+                          - img [ref=e788]
+                          - text: Closed
+                      - generic [ref=e791]:
+                        - 'link "Windows: 4 tests skipped due to cross-platform incompatibility #79" [ref=e793] [cursor=pointer]':
+                          - /url: /lessweb/deepcode-cli/issues/79
+                        - 'generic "Status: Closed" [ref=e795]':
+                          - img [ref=e796]
+                          - text: Closed
+                      - generic [ref=e799]:
+                        - 'link "Node 18: string-width 使用 v (unicodeSets) regex flag 导致 SyntaxError #80" [ref=e801] [cursor=pointer]':
+                          - /url: /lessweb/deepcode-cli/issues/80
+                        - 'generic "Status: Closed" [ref=e803]':
+                          - img [ref=e804]
+                          - text: Closed
+                      - generic [ref=e807]:
+                        - 'link "Windows: 4 个测试因依赖 Unix 特定机制无法运行 #81" [ref=e809] [cursor=pointer]':
+                          - /url: /lessweb/deepcode-cli/issues/81
+                        - 'generic "Status: Open" [ref=e811]':
+                          - img [ref=e812]
+                          - text: Open
+                  - generic [ref=e815]:
+                    - img [ref=e817]
+                    - generic [ref=e819]:
+                      - button "View details" [ref=e820] [cursor=pointer]
+                      - link "@qorzj" [ref=e821] [cursor=pointer]:
+                        - /url: /qorzj
+                        - img "@qorzj" [ref=e822]
+                      - link "qorzj" [ref=e823] [cursor=pointer]:
+                        - /url: /qorzj
+                      - text: merged commit
+                      - link "290465b" [ref=e824] [cursor=pointer]:
+                        - /url: /lessweb/deepcode-cli/commit/290465b6159de62fe83712193d56388acd757eb2
+                        - code [ref=e825]: 290465b
+                      - text: into
+                      - generic [ref=e827]: lessweb:main
+                      - link "May 16, 20265 hours ago" [ref=e828] [cursor=pointer]:
+                        - /url: https://github.com/lessweb/deepcode-cli/pull/77#event-25602110035
+                      - generic [ref=e829]: 9 checks passed
+                  - generic [ref=e831]:
+                    - img [ref=e833]
+                    - generic [ref=e835]:
+                      - generic [ref=e836]:
+                        - link "@qorzj" [ref=e837] [cursor=pointer]:
+                          - /url: /qorzj
+                          - img "@qorzj" [ref=e838]
+                        - link "qorzj" [ref=e839] [cursor=pointer]:
+                          - /url: /qorzj
+                        - text: mentioned this pull request
+                        - link "May 16, 20262 hours ago" [ref=e840] [cursor=pointer]:
+                          - /url: "#ref-issue-4459171869"
+                      - generic [ref=e841]:
+                        - 'link "【Release Notes】v0.1.21 #83" [ref=e843] [cursor=pointer]':
+                          - /url: /lessweb/deepcode-cli/issues/83
+                        - 'generic "Status: Open" [ref=e845]':
+                          - img [ref=e846]
+                          - text: Open
+            - generic [ref=e852]:
+              - link "Sign up for free" [ref=e853] [cursor=pointer]:
+                - /url: /join?source=comment-repo
+              - strong [ref=e854]: to join this conversation on GitHub
+              - text: . Already have an account?
+              - link "Sign in to comment" [ref=e855] [cursor=pointer]:
+                - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Flessweb%2Fdeepcode-cli%2Fpull%2F77
+        - generic [ref=e859]:
+          - form "Select reviewers" [ref=e861]:
+            - heading "Reviewers" [level=3] [ref=e862]
+            - text: No reviews
+          - form "Select assignees" [ref=e864]:
+            - heading "Assignees" [level=3] [ref=e865]
+            - text: No one assigned
+          - generic [ref=e866]:
+            - heading "Labels" [level=3] [ref=e867]
+            - generic [ref=e868]: None yet
+          - form "Select projects" [ref=e870]:
+            - heading "Projects" [level=3] [ref=e871]
+            - text: None yet
+          - form "Select milestones" [ref=e873]:
+            - heading "Milestone" [level=3] [ref=e874]
+            - text: No milestone
+          - form "Link issues" [ref=e880]:
+            - heading "Development" [level=3] [ref=e881]
+            - paragraph [ref=e882]: Successfully merging this pull request may close these issues.
+            - paragraph [ref=e884]: None yet
+          - generic [ref=e886]:
+            - heading "2 participants" [level=3] [ref=e887]
+            - generic [ref=e888]:
+              - link "@Lellansin" [ref=e889] [cursor=pointer]:
+                - /url: /Lellansin
+                - img "@Lellansin" [ref=e890]
+              - link "@qorzj" [ref=e891] [cursor=pointer]:
+                - /url: /qorzj
+                - img "@qorzj" [ref=e892]
+  - contentinfo [ref=e893]:
+    - heading "Footer" [level=2] [ref=e894]
+    - generic [ref=e895]:
+      - generic [ref=e896]:
+        - link "GitHub Homepage" [ref=e897] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e898]
+        - generic [ref=e900]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e901]:
+        - heading "Footer navigation" [level=3] [ref=e902]
+        - list "Footer navigation" [ref=e903]:
+          - listitem [ref=e904]:
+            - link "Terms" [ref=e905] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e906]:
+            - link "Privacy" [ref=e907] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e908]:
+            - link "Security" [ref=e909] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e910]:
+            - link "Status" [ref=e911] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e912]:
+            - link "Community" [ref=e913] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e914]:
+            - link "Docs" [ref=e915] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e916]:
+            - link "Contact" [ref=e917] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e918]:
+            - button "Manage cookies" [ref=e920] [cursor=pointer]
+          - listitem [ref=e921]:
+            - button "Do not share my personal information" [ref=e923] [cursor=pointer]

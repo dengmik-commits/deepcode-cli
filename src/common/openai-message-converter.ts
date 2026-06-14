@@ -174,9 +174,25 @@ export class OpenAIMessageConverter {
     toolCallId: string,
     usedToolMessageIndexes: Set<number>
   ): number | null {
+    // Claim the nearest unused matching tool message after this assistant,
+    // preferring a non-interrupted result. This must stop at the next assistant
+    // message that issues the same toolCallId, so a retry's second assistant
+    // does not steal the real tool result that belongs to the retry. Without
+    // this bound, the first assistant would claim the retry's real result and
+    // the retry would get a synthesized "interrupted" placeholder (H8).
     let firstMatchingIndex: number | null = null;
     for (let index = assistantIndex + 1; index < messages.length; index += 1) {
       const message = messages[index];
+      if (message.role === "assistant") {
+        const laterToolCalls = this.getAssistantToolCalls(message);
+        const laterClaimsSameId = laterToolCalls.some((call) => this.getToolCallId(call) === toolCallId);
+        if (laterClaimsSameId) {
+          // A later retry assistant owns the tool results after it; stop here.
+          break;
+        }
+        // Unrelated assistant message — keep scanning past it.
+        continue;
+      }
       if (message.role !== "tool" || usedToolMessageIndexes.has(index)) {
         continue;
       }

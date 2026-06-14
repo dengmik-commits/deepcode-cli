@@ -295,8 +295,11 @@ function findSuffixMatches(
 ): string[] {
   const matches: string[] = [];
   const queue: string[] = [root];
+  // Stop scanning once ambiguity is certain: the caller errors on >1 match,
+  // so there is no benefit collecting further candidates once we have two.
+  const ambiguityLimit = 2;
 
-  while (queue.length > 0) {
+  while (queue.length > 0 && matches.length < ambiguityLimit) {
     const current = queue.pop();
     if (!current) {
       continue;
@@ -321,6 +324,9 @@ function findSuffixMatches(
       }
       if (entry.isFile() && fullPath.endsWith(suffix)) {
         matches.push(fullPath);
+        if (matches.length >= ambiguityLimit) {
+          break;
+        }
       }
     }
   }
@@ -328,38 +334,48 @@ function findSuffixMatches(
   return matches;
 }
 
-function loadGitignoreMatcher(projectRoot: string): ((relPath: string, isDir: boolean) => boolean) | null {
+type GitignoreMatcher = (relPath: string, isDir: boolean) => boolean;
+
+// Module-level cache of compiled gitignore matchers, keyed by project root.
+// Each entry stores the .gitignore mtimeMs so an edit to .gitignore invalidates
+// the cache without manual eviction. This avoids re-reading and re-compiling
+// .gitignore on every read tool call.
+const gitignoreMatcherCache = new Map<string, { mtimeMs: number | null; matcher: GitignoreMatcher }>();
+
+function loadGitignoreMatcher(projectRoot: string): GitignoreMatcher {
   const gitignorePath = path.join(projectRoot, ".gitignore");
-  if (!fs.existsSync(gitignorePath)) {
-    const ig = ignore();
-    ig.add(DEFAULT_GITIGNORE);
-    return (relPath: string, isDir: boolean) => {
-      if (!relPath) {
-        return false;
-      }
-      const candidate = isDir ? `${relPath}/` : relPath;
-      return ig.ignores(candidate);
-    };
-  }
-
-  let content = "";
+  let mtimeMs: number | null = null;
   try {
-    content = fs.readFileSync(gitignorePath, "utf8");
+    if (fs.existsSync(gitignorePath)) {
+      mtimeMs = Math.floor(fs.statSync(gitignorePath).mtimeMs);
+    }
   } catch {
-    const ig = ignore();
-    ig.add(DEFAULT_GITIGNORE);
-    return (relPath: string, isDir: boolean) => {
-      if (!relPath) {
-        return false;
-      }
-      const candidate = isDir ? `${relPath}/` : relPath;
-      return ig.ignores(candidate);
-    };
+    mtimeMs = null;
   }
 
+  const cached = gitignoreMatcherCache.get(projectRoot);
+  if (cached && cached.mtimeMs === mtimeMs) {
+    return cached.matcher;
+  }
+
+  const matcher = buildGitignoreMatcher(gitignorePath);
+  gitignoreMatcherCache.set(projectRoot, { mtimeMs, matcher });
+  return matcher;
+}
+
+function buildGitignoreMatcher(gitignorePath: string): GitignoreMatcher {
   const ig = ignore();
   ig.add(DEFAULT_GITIGNORE);
-  ig.add(content);
+
+  if (fs.existsSync(gitignorePath)) {
+    try {
+      const content = fs.readFileSync(gitignorePath, "utf8");
+      ig.add(content);
+    } catch {
+      // fall back to defaults only
+    }
+  }
+
   return (relPath: string, isDir: boolean) => {
     if (!relPath) {
       return false;

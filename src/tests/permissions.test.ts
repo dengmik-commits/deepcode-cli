@@ -9,7 +9,9 @@ import {
   evaluatePermissionScopes,
   hasUserPermissionReplies,
   isPathInAnyDirectory,
+  isPathInProject,
   parseBashSideEffects,
+  resolveToolCallPermission,
 } from "../common/permissions";
 
 const tempDirs: string[] = [];
@@ -42,6 +44,7 @@ test("evaluatePermissionScopes applies deny, ask, allow, and default mode preced
   assert.equal(evaluatePermissionScopes(["network"], settings), "ask");
   assert.equal(evaluatePermissionScopes(["read-in-cwd"], settings), "allow");
   assert.equal(evaluatePermissionScopes(["write-in-cwd"], settings), "ask");
+  // Empty scopes represent explicitly exempt calls (e.g. skill resource reads).
   assert.equal(evaluatePermissionScopes([], settings), "allow");
   assert.equal(evaluatePermissionScopes(["unknown"], settings), "ask");
 });
@@ -336,6 +339,46 @@ test("hasUserPermissionReplies detects permission reply payloads", () => {
   assert.equal(hasUserPermissionReplies({ permissions: [] }), false);
   assert.equal(hasUserPermissionReplies({ permissions: [{ toolCallId: "call-1", permission: "allow" }] }), true);
   assert.equal(hasUserPermissionReplies({ alwaysAllows: ["network"] }), true);
+});
+
+test("resolveToolCallPermission fails closed (asks) for unknown tool call ids", () => {
+  // No override and no message permission → must ask rather than silently allow.
+  assert.equal(resolveToolCallPermission("call-unknown", {}), "ask");
+  assert.equal(resolveToolCallPermission("call-unknown", { permissionOverrides: [] }), "ask");
+  assert.equal(resolveToolCallPermission("call-unknown", { messagePermissions: [] }), "ask");
+  // Explicit override/message entries are still honored.
+  assert.equal(
+    resolveToolCallPermission("call-1", { permissionOverrides: [{ toolCallId: "call-1", permission: "allow" }] }),
+    "allow"
+  );
+  assert.equal(
+    resolveToolCallPermission("call-2", { messagePermissions: [{ toolCallId: "call-2", permission: "deny" }] }),
+    "deny"
+  );
+});
+
+test("isPathInProject rejects paths that escape via symlinks", () => {
+  const projectRoot = createTempDir("deepcode-permissions-symlink-");
+  const outsideRoot = createTempDir("deepcode-permissions-symlink-outside-");
+  const outsideTarget = path.join(outsideRoot, "secret.txt");
+  fs.writeFileSync(outsideTarget, "secret", "utf8");
+
+  // Create a symlink inside the project pointing outside.
+  const symlinkPath = path.join(projectRoot, "escape-link");
+  try {
+    fs.symlinkSync(outsideRoot, symlinkPath, "dir");
+  } catch {
+    // symlink creation may be unavailable; skip this assertion path gracefully.
+    return;
+  }
+
+  // A lexical-only check would classify escape-link/secret.txt as in-project.
+  // The realpath-based check must reject it because it resolves outside.
+  assert.equal(isPathInProject(projectRoot, path.join(symlinkPath, "secret.txt")), false);
+  // A genuine in-project path still passes.
+  const realFile = path.join(projectRoot, "real.txt");
+  fs.writeFileSync(realFile, "x", "utf8");
+  assert.equal(isPathInProject(projectRoot, realFile), true);
 });
 
 function createTempDir(prefix: string): string {

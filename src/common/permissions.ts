@@ -96,6 +96,13 @@ export function buildPermissionToolExecution(
     messagePermissions?: MessageToolPermission[];
   }
 ): PermissionToolExecution | null {
+  // When no permission context is provided (both lists absent/empty), the
+  // session is not using the permission gate at all — let tools run freely.
+  const hasOverrides = options.permissionOverrides && options.permissionOverrides.length > 0;
+  const hasMessagePermissions = options.messagePermissions && options.messagePermissions.length > 0;
+  if (!hasOverrides && !hasMessagePermissions) {
+    return null;
+  }
   const permission = resolveToolCallPermission(toolCall.id, options);
   if (permission === "allow") {
     return null;
@@ -131,7 +138,10 @@ export function resolveToolCallPermission(
   ) {
     return messagePermission.permission;
   }
-  return "allow";
+  // Fail closed: an unknown/unregistered tool call (toolCallId not in any list)
+  // should prompt the user rather than silently execute. Returning "allow" here
+  // would let any tool call whose id was never classified run without consent.
+  return "ask";
 }
 
 export function buildSyntheticToolExecution(toolCall: PermissionToolCall, error: string): PermissionToolExecution {
@@ -277,6 +287,10 @@ export function evaluatePermissionScopes(
     return "ask";
   }
   if (scopes.length === 0) {
+    // An empty scope list represents an explicitly exempt call (e.g. a read of
+    // a skill resource under readPermissionExemptPaths). The fail-closed guard
+    // for unclassified/unknown tool calls is handled by resolveToolCallPermission
+    // defaulting to "ask" for toolCallIds absent from every permission list.
     return "allow";
   }
   const permissionScopes = scopes.filter((scope): scope is PermissionScope => scope !== "unknown");
@@ -388,8 +402,31 @@ export function formatToolPathCommand(toolName: string, filePath: string): strin
 export function isPathInProject(projectRoot: string, filePath: string): boolean {
   const normalized = normalizeFilePath(filePath);
   const absolutePath = isAbsoluteFilePath(normalized) ? normalized : path.resolve(projectRoot, normalized);
-  const relative = path.relative(path.resolve(projectRoot), path.resolve(absolutePath));
+
+  // Resolve symlinks on both sides before comparing. A lexical-only check
+  // (path.resolve/path.relative) can be bypassed by a symlink inside the
+  // project that points outside it, classifying an out-of-project write as
+  // in-cwd and skipping the permission prompt. realpath is the established
+  // pattern in this codebase (see ui/core/file-mentions.ts).
+  const resolvedRoot = safeRealpath(projectRoot);
+  const resolvedPath = safeRealpath(absolutePath);
+  if (!resolvedRoot || !resolvedPath) {
+    // Broken symlink or missing path — fall back to lexical check so we do not
+    // regress existing behavior for paths that do not exist yet (write/create).
+    const relative = path.relative(path.resolve(projectRoot), path.resolve(absolutePath));
+    return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+  }
+
+  const relative = path.relative(resolvedRoot, resolvedPath);
   return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
+function safeRealpath(target: string): string | null {
+  try {
+    return fs.realpathSync(target);
+  } catch {
+    return null;
+  }
 }
 
 export function isPathInAnyDirectory(

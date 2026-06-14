@@ -1,0 +1,417 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner [ref=e6]:
+      - heading "Navigation Menu" [level=2] [ref=e7]
+      - generic [ref=e9]:
+        - button "Toggle navigation" [ref=e11] [cursor=pointer]
+        - link "Homepage" [ref=e17] [cursor=pointer]:
+          - /url: /
+          - img [ref=e18]
+        - generic [ref=e20]:
+          - link "Sign in" [ref=e21] [cursor=pointer]:
+            - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Flessweb%2Fdeepcode-cli%2Fpull%2F84
+          - button "Appearance settings" [disabled] [ref=e24]:
+            - img
+  - main [ref=e28]:
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e32]:
+          - img [ref=e33]
+          - link "lessweb" [ref=e36] [cursor=pointer]:
+            - /url: /lessweb
+          - generic [ref=e37]: /
+          - strong [ref=e38]:
+            - link "deepcode-cli" [ref=e39] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli
+          - generic [ref=e40]: Public
+        - generic [ref=e41]:
+          - list:
+            - listitem [ref=e42]:
+              - link "You must be signed in to change notification settings" [ref=e43] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e44]
+                - text: Notifications
+            - listitem [ref=e46]:
+              - link "Fork 53" [ref=e47] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e48]
+                - text: Fork
+                - generic "53" [ref=e50]
+            - listitem [ref=e51]:
+              - link "You must be signed in to star a repository" [ref=e53] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e54]
+                - text: Star
+                - generic "710 users starred this repository" [ref=e56]: "710"
+      - navigation "Repository" [ref=e57]:
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Code" [ref=e60] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli
+              - img [ref=e61]
+              - generic [ref=e63]: Code
+          - listitem [ref=e64]:
+            - link "Issues 21" [ref=e65] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/issues
+              - img [ref=e66]
+              - generic [ref=e69]: Issues
+              - generic "21" [ref=e70]
+          - listitem [ref=e71]:
+            - link "Pull requests 4" [ref=e72] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/pulls
+              - img [ref=e73]
+              - generic [ref=e75]: Pull requests
+              - generic "4" [ref=e76]
+          - listitem [ref=e77]:
+            - link "Actions" [ref=e78] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/actions
+              - img [ref=e79]
+              - generic [ref=e81]: Actions
+          - listitem [ref=e82]:
+            - link "Projects" [ref=e83] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/projects
+              - img [ref=e84]
+              - generic [ref=e86]: Projects
+          - listitem [ref=e87]:
+            - link "Security and quality" [ref=e88] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/security
+              - img [ref=e89]
+              - generic [ref=e91]: Security and quality
+          - listitem [ref=e92]
+        - button "Additional navigation options" [ref=e96] [cursor=pointer]:
+          - img
+    - generic [ref=e103]:
+      - generic [ref=e106]:
+        - 'heading "feat: MCP 服务器手动重连功能 #84" [level=1] [ref=e108]':
+          - text: "feat: MCP 服务器手动重连功能"
+          - generic [ref=e110]: "#84"
+        - generic [ref=e112]:
+          - generic [ref=e114]:
+            - img "Pull request" [ref=e115]
+            - text: Open
+          - generic [ref=e118]:
+            - link "dengmik-commits" [ref=e119] [cursor=pointer]:
+              - /url: /dengmik-commits
+            - text: wants to merge 1 commit into
+            - generic [ref=e120]:
+              - link "lessweb:main" [ref=e121] [cursor=pointer]:
+                - /url: /lessweb/deepcode-cli/tree/main
+              - generic [ref=e122]: from
+              - generic [ref=e123]:
+                - link "dengmik-commits:main" [ref=e124] [cursor=pointer]:
+                  - /url: /dengmik-commits/deepcode-cli/tree/main
+                - button "Copy head branch name to clipboard" [ref=e125] [cursor=pointer]:
+                  - img [ref=e126]
+        - navigation "Pull request navigation tabs" [ref=e132]:
+          - tablist [ref=e133]:
+            - tab "Conversation" [selected] [ref=e134] [cursor=pointer]:
+              - img [ref=e135]
+              - text: Conversation
+            - tab "Commits (1)" [ref=e137] [cursor=pointer]:
+              - img [ref=e138]
+              - text: Commits
+              - generic [ref=e140]: "1"
+              - generic [ref=e141]: (1)
+            - tab "Checks" [ref=e142] [cursor=pointer]:
+              - img [ref=e143]
+              - text: Checks
+            - tab "Files changed" [ref=e145] [cursor=pointer]:
+              - img [ref=e146]
+              - text: Files changed
+      - generic [ref=e152]:
+        - generic [ref=e154]:
+          - heading "Conversation" [level=2] [ref=e155]
+          - generic [ref=e156]:
+            - generic [ref=e157]:
+              - generic [ref=e159]:
+                - link "@dengmik-commits" [ref=e160] [cursor=pointer]:
+                  - /url: /dengmik-commits
+                  - img "@dengmik-commits" [ref=e161]
+                - generic [ref=e163]:
+                  - generic [ref=e164]:
+                    - generic [ref=e165]:
+                      - group [ref=e167]:
+                        - button "Show options" [ref=e168] [cursor=pointer]:
+                          - img "Show options" [ref=e171]
+                      - generic "This user has previously committed to the deepcode-cli repository." [ref=e174]:
+                        - generic [ref=e175]: Contributor
+                    - heading "dengmik-commits commented May 16, 20262 minutes ago" [level=3] [ref=e176]:
+                      - generic [ref=e177]:
+                        - strong [ref=e178]:
+                          - link "dengmik-commits" [ref=e179] [cursor=pointer]:
+                            - /url: /dengmik-commits
+                        - text: commented
+                        - link "May 16, 20262 minutes ago" [ref=e180] [cursor=pointer]:
+                          - /url: "#issue-4459560644"
+                  - generic [ref=e184]:
+                    - heading "概述" [level=2] [ref=e185]
+                    - paragraph [ref=e186]:
+                      - text: 当前 MCP 服务器初始化失败后直接标记
+                      - code [ref=e187]: failed
+                      - text: ，无法恢复。本 PR 增加了手动重连机制：用户可在
+                      - code [ref=e188]: /mcp
+                      - text: 界面进入失败的服务器详情，选择 Reconnect 触发单次重连。
+                    - heading "设计" [level=2] [ref=e189]
+                    - generic [ref=e190]:
+                      - code [ref=e192]: "/mcp → 服务器列表 fetch: ✗ Failed ↓ 按 Enter 进入详情 > ↻ [Reconnect] ← 二级菜单项 Error: exited with code 7 ↓ 按 Enter 触发重连 fetch: ↻ Reconnecting... ↓ 成功 → ✓ Ready / 失败 → ✗ Failed"
+                      - button "Copy code to clipboard" [ref=e194] [cursor=pointer]:
+                        - img [ref=e195]
+                    - paragraph [ref=e198]:
+                      - strong [ref=e199]: 关键约束
+                      - text: ：
+                    - list [ref=e200]:
+                      - listitem [ref=e201]: 失败后不自动重试，由用户主动触发
+                      - listitem [ref=e202]: 每次重连仅尝试一次，无 backoff/retry
+                      - listitem [ref=e203]: 重连时实时读取磁盘上的最新 settings.json，无需重启
+                    - heading "变更" [level=2] [ref=e204]
+                    - heading "src/mcp/mcp-client.ts" [level=3] [ref=e205]:
+                      - code [ref=e206]: src/mcp/mcp-client.ts
+                    - list [ref=e207]:
+                      - listitem [ref=e208]:
+                        - text: 新增
+                        - code [ref=e209]: onDisconnect
+                        - text: 回调参数，区分主动断开与进程崩溃
+                      - listitem [ref=e210]:
+                        - text: 新增
+                        - code [ref=e211]: isConnected()
+                        - text: 方法
+                      - listitem [ref=e212]:
+                        - code [ref=e213]: safeReject
+                        - text: 修复进程退出竞态条件：close 事件可能在 sendRequest 注册前触发，导致 connect() 永远等待超时
+                      - listitem [ref=e214]:
+                        - text: 适配上游的 Windows spawn 修复（直接传递 command+args，不强制拼
+                        - code [ref=e215]: .cmd
+                        - text: ）
+                    - heading "src/mcp/mcp-manager.ts" [level=3] [ref=e216]:
+                      - code [ref=e217]: src/mcp/mcp-manager.ts
+                    - list [ref=e218]:
+                      - listitem [ref=e219]:
+                        - code [ref=e220]: McpServerStatus.status
+                        - text: 类型新增
+                        - code [ref=e221]: "\"reconnecting\""
+                      - listitem [ref=e222]:
+                        - code [ref=e223]: initialize()
+                        - text: 拆分出
+                        - code [ref=e224]: connectServer()
+                        - text: ：单次尝试，失败直接
+                        - code [ref=e225]: setStatus("failed")
+                      - listitem [ref=e226]:
+                        - text: 新增公开方法
+                        - code [ref=e227]: reconnect(name, config?)
+                        - text: ：接受可选的最新配置，更新缓存并重连
+                      - listitem [ref=e228]:
+                        - code [ref=e229]: onServerCrash()
+                        - text: ：运行时崩溃清理旧条目并标记
+                        - code [ref=e230]: failed
+                        - text: ，不自动重连
+                      - listitem [ref=e231]:
+                        - text: 可配环境变量：
+                        - code [ref=e232]: DEEPCODE_MCP_TIMEOUT
+                        - text: （单次连接超时，默认 30s）
+                    - heading "src/session.ts" [level=3] [ref=e233]:
+                      - code [ref=e234]: src/session.ts
+                    - list [ref=e235]:
+                      - listitem [ref=e236]:
+                        - text: 新增
+                        - code [ref=e237]: reconnectMcpServer(name, config?)
+                        - text: 委托给 McpManager
+                    - heading "src/ui/App.tsx" [level=3] [ref=e238]:
+                      - code [ref=e239]: src/ui/App.tsx
+                    - list [ref=e240]:
+                      - listitem [ref=e241]:
+                        - code [ref=e242]: McpStatusList
+                        - text: 传入
+                        - code [ref=e243]: onReconnect
+                        - text: 回调
+                      - listitem [ref=e244]:
+                        - text: 回调内调用
+                        - code [ref=e245]: resolveCurrentSettings()
+                        - text: 保证每次重连都读取最新配置
+                    - heading "src/ui/McpStatusList.tsx" [level=3] [ref=e246]:
+                      - code [ref=e247]: src/ui/McpStatusList.tsx
+                    - list [ref=e248]:
+                      - listitem [ref=e249]:
+                        - code [ref=e250]: enterDetail
+                        - text: 允许
+                        - code [ref=e251]: failed
+                        - text: /
+                        - code [ref=e252]: reconnecting
+                        - text: 服务器进入详情
+                      - listitem [ref=e253]:
+                        - code [ref=e254]: ServerDetailView
+                        - text: 新增
+                        - code [ref=e255]: onReconnect
+                        - text: prop
+                      - listitem [ref=e256]:
+                        - text: 对
+                        - code [ref=e257]: failed
+                        - text: 服务器渲染
+                        - code [ref=e258]: "[Reconnect]"
+                        - text: 菜单项，默认
+                        - code [ref=e259]: ">"
+                        - text: 光标选中
+                      - listitem [ref=e260]:
+                        - code [ref=e261]: ItemRow
+                        - text: 支持
+                        - code [ref=e262]: action
+                        - text: 类型，选中时显示
+                        - code [ref=e263]: ">"
+                        - text: 前缀
+                      - listitem [ref=e264]:
+                        - text: 底部提示：
+                        - code [ref=e265]: Enter to reconnect · Esc back · Ctrl+C close
+                    - heading "src/tests/session.test.ts" [level=3] [ref=e266]:
+                      - code [ref=e267]: src/tests/session.test.ts
+                    - list [ref=e268]:
+                      - listitem [ref=e269]:
+                        - code [ref=e270]: SessionManager marks MCP server as failed on single failed attempt (no auto-retry)
+                        - text: — 确认失败后无自动重连
+                      - listitem [ref=e271]:
+                        - code [ref=e272]: SessionManager reconnect succeeds on previously failed server
+                        - text: — 确认手动重连成功
+                    - heading "验证" [level=2] [ref=e273]
+                    - heading "自动化测试" [level=3] [ref=e274]
+                    - generic [ref=e275]:
+                      - code [ref=e277]: "npm run typecheck # ✅ 零错误 npm run bundle # ✅ dist/cli.js 335KB DEEPCODE_MCP_TIMEOUT=3000 npm test # ✅ 208/213 pass"
+                      - button "Copy code to clipboard" [ref=e279] [cursor=pointer]:
+                        - img [ref=e280]
+                    - heading "手动验证流程" [level=3] [ref=e283]
+                    - paragraph [ref=e284]:
+                      - strong [ref=e285]: 1. 制造失败：
+                      - text: 将
+                      - code [ref=e286]: ~/.deepcode/settings.json
+                      - text: 中 fetch 服务器包名改为不存在的包：
+                    - generic [ref=e287]:
+                      - generic [ref=e288]:
+                        - text: "\"fetch\": { \"command\": \"npx\","
+                        - generic [ref=e289]: "- \"args\": [\"-y\", \"mcp-fetch-server\"]"
+                        - generic [ref=e290]: "+ \"args\": [\"-y\", \"mcp-fetch-server-BROKEN\"]"
+                        - text: "}"
+                      - button "Copy code to clipboard" [ref=e292] [cursor=pointer]:
+                        - img [ref=e293]
+                    - paragraph [ref=e296]:
+                      - strong [ref=e297]:
+                        - text: 2. 启动 deepcode，执行
+                        - code [ref=e298]: /mcp
+                        - text: ：
+                    - generic [ref=e299]:
+                      - code [ref=e301]: "Manage MCP servers (1 ready, 1 starting, 1 failed) ... > ✗ fetch Failed Error: ... exited with code 1 ..."
+                      - button "Copy code to clipboard" [ref=e303] [cursor=pointer]:
+                        - img [ref=e304]
+                    - paragraph [ref=e307]:
+                      - strong [ref=e308]: 3. Enter 进入详情：
+                    - generic [ref=e309]:
+                      - code [ref=e311]: "✗ fetch — Status Error: ... exited with code 1 ... ───────────────── > ↻ [Reconnect]"
+                      - button "Copy code to clipboard" [ref=e313] [cursor=pointer]:
+                        - img [ref=e314]
+                    - paragraph [ref=e317]:
+                      - strong [ref=e318]: 4. Enter 触发重连
+                      - text: （包名仍然错误）—— 返回列表，看到
+                      - code [ref=e319]: ↻ Reconnecting...
+                      - text: 后再次
+                      - code [ref=e320]: ✗ Failed
+                      - text: 。
+                    - paragraph [ref=e321]:
+                      - strong [ref=e322]: 5. 改回正确包名：
+                    - generic [ref=e323]:
+                      - generic [ref=e324]:
+                        - generic [ref=e325]: "- \"args\": [\"-y\", \"mcp-fetch-server-BROKEN\"]"
+                        - generic [ref=e326]: "+ \"args\": [\"-y\", \"mcp-fetch-server\"]"
+                      - button "Copy code to clipboard" [ref=e328] [cursor=pointer]:
+                        - img [ref=e329]
+                    - paragraph [ref=e332]:
+                      - strong [ref=e333]:
+                        - text: 6. 再次 Enter →
+                        - code [ref=e334]: "[Reconnect]"
+                        - text: → Enter
+                      - text: —— fetch 恢复
+                      - code [ref=e335]: ✓ Ready
+                      - text: 。
+                    - paragraph [ref=e336]:
+                      - strong [ref=e337]: 关键：
+                      - text: 步骤 5-6 无需重启 deepcode，
+                      - code [ref=e338]: reconnect()
+                      - text: 每次从磁盘实时读取最新配置。
+              - generic [ref=e343]:
+                - img [ref=e345]
+                - generic [ref=e350]:
+                  - link "@dengmik-commits" [ref=e353] [cursor=pointer]:
+                    - /url: /dengmik-commits
+                    - img "@dengmik-commits" [ref=e354]
+                  - generic [ref=e355]:
+                    - code [ref=e356]:
+                      - 'link "feat: add manual MCP server reconnect with secondary menu" [ref=e357] [cursor=pointer]':
+                        - /url: /lessweb/deepcode-cli/pull/84/commits/04f6a34c30b7d201770a6058d4b741dc86062f9c
+                    - button "Commit message body" [ref=e359] [cursor=pointer]: …
+                  - code [ref=e367]:
+                    - link "04f6a34" [ref=e368] [cursor=pointer]:
+                      - /url: /lessweb/deepcode-cli/pull/84/commits/04f6a34c30b7d201770a6058d4b741dc86062f9c
+            - generic [ref=e372]:
+              - link "Sign up for free" [ref=e373] [cursor=pointer]:
+                - /url: /join?source=comment-repo
+              - strong [ref=e374]: to join this conversation on GitHub
+              - text: . Already have an account?
+              - link "Sign in to comment" [ref=e375] [cursor=pointer]:
+                - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Flessweb%2Fdeepcode-cli%2Fpull%2F84
+        - generic [ref=e379]:
+          - form "Select reviewers" [ref=e381]:
+            - heading "Reviewers" [level=3] [ref=e382]
+            - text: No reviews
+          - form "Select assignees" [ref=e384]:
+            - heading "Assignees" [level=3] [ref=e385]
+            - text: No one assigned
+          - generic [ref=e386]:
+            - heading "Labels" [level=3] [ref=e387]
+            - generic [ref=e388]: None yet
+          - form "Select projects" [ref=e390]:
+            - heading "Projects" [level=3] [ref=e391]
+            - text: None yet
+          - form "Select milestones" [ref=e393]:
+            - heading "Milestone" [level=3] [ref=e394]
+            - text: No milestone
+          - form "Link issues" [ref=e400]:
+            - heading "Development" [level=3] [ref=e401]
+            - paragraph [ref=e402]: Successfully merging this pull request may close these issues.
+          - generic [ref=e404]:
+            - heading "1 participant" [level=3] [ref=e405]
+            - link "@dengmik-commits" [ref=e407] [cursor=pointer]:
+              - /url: /dengmik-commits
+              - img "@dengmik-commits" [ref=e408]
+  - contentinfo [ref=e409]:
+    - heading "Footer" [level=2] [ref=e410]
+    - generic [ref=e411]:
+      - generic [ref=e412]:
+        - link "GitHub Homepage" [ref=e413] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e414]
+        - generic [ref=e416]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e417]:
+        - heading "Footer navigation" [level=3] [ref=e418]
+        - list "Footer navigation" [ref=e419]:
+          - listitem [ref=e420]:
+            - link "Terms" [ref=e421] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e422]:
+            - link "Privacy" [ref=e423] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e424]:
+            - link "Security" [ref=e425] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e426]:
+            - link "Status" [ref=e427] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e428]:
+            - link "Community" [ref=e429] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e430]:
+            - link "Docs" [ref=e431] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e432]:
+            - link "Contact" [ref=e433] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e434]:
+            - button "Manage cookies" [ref=e436] [cursor=pointer]
+          - listitem [ref=e437]:
+            - button "Do not share my personal information" [ref=e439] [cursor=pointer]

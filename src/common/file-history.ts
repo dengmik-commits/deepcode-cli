@@ -183,22 +183,52 @@ export class GitFileHistory {
     const currentManifest = currentHash ? this.readManifest(currentHash) : emptyManifest();
     const targetManifest = this.readManifest(checkpointHash);
 
+    // Read every target blob up front so a missing or corrupt blob aborts the
+    // restore before any workspace file is modified. Without this, a failure on
+    // the Nth blob leaves the first N-1 files already overwritten (half-write).
+    const writeEntries: Array<{ entry: FileHistoryEntry; buffer: Buffer | null }> = [];
+    for (const entry of Object.values(targetManifest.files)) {
+      const buffer = entry.blob ? this.readBlob(entry.blob) : null;
+      writeEntries.push({ entry, buffer });
+    }
+
+    // Removal phase: drop tracked files absent from the target. This still uses
+    // restoreFirstKnownEntry which may itself write a known-good prior version;
+    // it runs only after all target reads above succeeded.
     for (const [key, entry] of Object.entries(currentManifest.files)) {
       if (!targetManifest.files[key]) {
         this.restoreFirstKnownEntry(currentHash, key, entry.path);
       }
     }
 
-    for (const entry of Object.values(targetManifest.files)) {
-      if (!entry.blob) {
+    for (const { entry, buffer } of writeEntries) {
+      if (!buffer) {
         removeTrackedFile(entry.path);
         continue;
       }
       fs.mkdirSync(path.dirname(entry.path), { recursive: true });
-      fs.writeFileSync(entry.path, this.readBlob(entry.blob));
+      fs.writeFileSync(entry.path, buffer);
     }
 
     this.runGit(["update-ref", branchRef, checkpointHash]);
+  }
+
+  /**
+   * Deletes the session's checkpoint branch so evicted/deleted sessions no
+   * longer accumulate orphan refs in the file-history git repository. Object
+   * blobs are left for git's own garbage collection; the important part is that
+   * the named ref is gone. Silently no-ops if the ref or repo is absent.
+   */
+  deleteSession(sessionId: string): void {
+    const branchRef = this.getSessionBranchRef(sessionId);
+    if (!branchRef || !fs.existsSync(this.gitDir)) {
+      return;
+    }
+    try {
+      this.runGit(["update-ref", "-d", branchRef]);
+    } catch {
+      // ref may already be absent; ignore
+    }
   }
 
   private restoreFirstKnownEntry(currentHash: string | undefined, key: string, fallbackPath: string): void {

@@ -1,0 +1,288 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - tooltip "This user is the author of this issue"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner [ref=e6]:
+      - heading "Navigation Menu" [level=2] [ref=e7]
+      - generic [ref=e8]:
+        - link "Homepage" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - navigation "Global" [ref=e16]:
+            - list [ref=e17]:
+              - listitem [ref=e18]:
+                - button "Platform" [ref=e20] [cursor=pointer]:
+                  - text: Platform
+                  - img [ref=e21]
+              - listitem [ref=e23]:
+                - button "Solutions" [ref=e25] [cursor=pointer]:
+                  - text: Solutions
+                  - img [ref=e26]
+              - listitem [ref=e28]:
+                - button "Resources" [ref=e30] [cursor=pointer]:
+                  - text: Resources
+                  - img [ref=e31]
+              - listitem [ref=e33]:
+                - button "Open Source" [ref=e35] [cursor=pointer]:
+                  - text: Open Source
+                  - img [ref=e36]
+              - listitem [ref=e38]:
+                - button "Enterprise" [ref=e40] [cursor=pointer]:
+                  - text: Enterprise
+                  - img [ref=e41]
+              - listitem [ref=e43]:
+                - link "Pricing" [ref=e44] [cursor=pointer]:
+                  - /url: https://github.com/pricing
+                  - generic [ref=e45]: Pricing
+          - generic [ref=e46]:
+            - button "Search or jump to…" [ref=e49] [cursor=pointer]:
+              - img [ref=e51]
+              - generic [ref=e53]: Search or jump to...
+              - img [ref=e55]
+            - link "Sign in" [ref=e59] [cursor=pointer]:
+              - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Flessweb%2Fdeepcode-cli%2Fissues%2F82
+            - link "Sign up" [ref=e60] [cursor=pointer]:
+              - /url: /signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E%2Fvoltron%2Fissues_fragments%2Fissue_layout&source=header-repo&source_repo=lessweb%2Fdeepcode-cli
+            - button "Appearance settings" [disabled] [ref=e63]:
+              - img
+  - main [ref=e67]:
+    - generic [ref=e68]:
+      - generic [ref=e69]:
+        - generic [ref=e71]:
+          - img [ref=e72]
+          - link "lessweb" [ref=e75] [cursor=pointer]:
+            - /url: /lessweb
+          - generic [ref=e76]: /
+          - strong [ref=e77]:
+            - link "deepcode-cli" [ref=e78] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli
+          - generic [ref=e79]: Public
+        - generic [ref=e80]:
+          - list:
+            - listitem [ref=e81]:
+              - link "You must be signed in to change notification settings" [ref=e82] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e83]
+                - text: Notifications
+            - listitem [ref=e85]:
+              - link "Fork 53" [ref=e86] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e87]
+                - text: Fork
+                - generic "53" [ref=e89]
+            - listitem [ref=e90]:
+              - link "You must be signed in to star a repository" [ref=e92] [cursor=pointer]:
+                - /url: /login?return_to=%2Flessweb%2Fdeepcode-cli
+                - img [ref=e93]
+                - text: Star
+                - generic "710 users starred this repository" [ref=e95]: "710"
+      - navigation "Repository" [ref=e96]:
+        - list [ref=e97]:
+          - listitem [ref=e98]:
+            - link "Code" [ref=e99] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli
+              - img [ref=e100]
+              - generic [ref=e102]: Code
+          - listitem [ref=e103]:
+            - link "Issues 21" [ref=e104] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/issues
+              - img [ref=e105]
+              - generic [ref=e108]: Issues
+              - generic "21" [ref=e109]
+          - listitem [ref=e110]:
+            - link "Pull requests 4" [ref=e111] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/pulls
+              - img [ref=e112]
+              - generic [ref=e114]: Pull requests
+              - generic "4" [ref=e115]
+          - listitem [ref=e116]:
+            - link "Actions" [ref=e117] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/actions
+              - img [ref=e118]
+              - generic [ref=e120]: Actions
+          - listitem [ref=e121]:
+            - link "Projects" [ref=e122] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/projects
+              - img [ref=e123]
+              - generic [ref=e125]: Projects
+          - listitem [ref=e126]:
+            - link "Security and quality" [ref=e127] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/security
+              - img [ref=e128]
+              - generic [ref=e130]: Security and quality
+          - listitem [ref=e131]:
+            - link "Insights" [ref=e132] [cursor=pointer]:
+              - /url: /lessweb/deepcode-cli/pulse
+              - img [ref=e133]
+              - generic [ref=e135]: Insights
+    - generic [ref=e143]:
+      - region "Header" [ref=e145]:
+        - generic [ref=e146]:
+          - 'heading "功能请求：增加完整原始输出开关 #82" [level=1] [ref=e148]'
+          - generic [ref=e150]:
+            - button "New issue" [ref=e152] [cursor=pointer]:
+              - generic [ref=e154]: New issue
+            - button "Copy link" [ref=e155] [cursor=pointer]:
+              - img [ref=e156]
+      - generic [ref=e164]:
+        - img "Issue" [ref=e165]
+        - text: Open
+      - generic [ref=e169]:
+        - generic [ref=e170]:
+          - generic [ref=e172]:
+            - link "@fym998's profile" [ref=e173] [cursor=pointer]:
+              - /url: https://github.com/fym998
+              - img "@fym998" [ref=e174]
+            - generic [ref=e175]:
+              - heading "Description" [level=2] [ref=e176]
+              - generic [ref=e178]:
+                - generic [ref=e180]:
+                  - generic [ref=e181]:
+                    - link "fym998" [ref=e183] [cursor=pointer]:
+                      - /url: https://github.com/fym998
+                    - generic [ref=e184]:
+                      - text: opened
+                      - link "on May 16, 20265 hours ago" [ref=e185] [cursor=pointer]:
+                        - /url: https://github.com/lessweb/deepcode-cli/issues/82#issue-4458741142
+                        - generic "May 16, 2026, 1:32 PM GMT+8" [ref=e186]: on May 16, 20265 hours ago
+                  - button "Issue body actions" [ref=e190] [cursor=pointer]:
+                    - img [ref=e191]
+                - generic [ref=e193]:
+                  - generic [ref=e195]:
+                    - paragraph [ref=e196]:
+                      - text: 参考 codex 的
+                      - code [ref=e197]: /raw
+                      - text: 命令，切换原始完整输出，包括完整思维链、工具调用及其输出，以便实时审计。默认输出格式信息简略过度（尤其在 tool call 轮数很多的时候），不便知道模型的思路和执行的具体操作。
+                    - paragraph [ref=e198]:
+                      - text: 本提案可能可以覆盖
+                      - link "#12" [ref=e199] [cursor=pointer]:
+                        - /url: https://github.com/lessweb/deepcode-cli/issues/12
+                      - text: 和
+                      - link "#60" [ref=e200] [cursor=pointer]:
+                        - /url: https://github.com/lessweb/deepcode-cli/issues/60
+                      - text: 。
+                  - toolbar "Reactions" [ref=e202]:
+                    - switch "👀 1 reaction" [ref=e203]:
+                      - generic [ref=e204]:
+                        - generic: 👀
+                        - generic [ref=e205]:
+                          - generic [ref=e206]: React with 👀
+                          - text: "1"
+          - generic [ref=e208]:
+            - generic [ref=e209]:
+              - heading "Activity" [level=2] [ref=e210]
+              - generic [ref=e212]:
+                - link "@fym998's profile" [ref=e213] [cursor=pointer]:
+                  - /url: https://github.com/fym998
+                  - img "fym998" [ref=e214]
+                - generic [ref=e221]:
+                  - generic [ref=e223]:
+                    - heading "fym998 commented on May 16, 2026 4 hours ago" [level=3] [ref=e224]:
+                      - text: fym998 commented
+                      - generic "May 16, 2026, 1:38 PM GMT+8" [ref=e225]: on May 16, 2026 4 hours ago
+                    - generic [ref=e226]:
+                      - link "fym998" [ref=e228] [cursor=pointer]:
+                        - /url: /fym998
+                      - link "on May 16, 20264 hours ago" [ref=e231] [cursor=pointer]:
+                        - /url: https://github.com/lessweb/deepcode-cli/issues/82#issuecomment-4465856991
+                        - generic "May 16, 2026, 1:38 PM GMT+8" [ref=e232]: on May 16, 20264 hours ago
+                    - generic [ref=e233]:
+                      - button "Last edited by fym998" [ref=e236] [cursor=pointer]:
+                        - generic [ref=e239]: Last edited by fym998
+                        - generic:
+                          - img
+                      - generic [ref=e240]:
+                        - generic "This user is the author of this issue" [ref=e242]: Author
+                        - button "Actions for fym998's comment, 1:38 PM today" [ref=e244] [cursor=pointer]:
+                          - img [ref=e245]
+                  - generic [ref=e247]:
+                    - paragraph [ref=e250]: 顺便感谢 Deep Code 创建者和全体贡献者，解决了我的燃眉之急！之后空出时间尽量做点贡献！
+                    - toolbar "Reactions" [ref=e251]:
+                      - switch "👍 1 reaction" [ref=e252]:
+                        - generic [ref=e253]:
+                          - generic: 👍
+                          - generic [ref=e254]:
+                            - generic [ref=e255]: React with 👍
+                            - text: "1"
+            - generic [ref=e256]:
+              - link "Sign up for free" [ref=e257] [cursor=pointer]:
+                - /url: /signup?return_to=https://github.com/lessweb/deepcode-cli/issues/82
+                - generic [ref=e259]: Sign up for free
+              - generic [ref=e260]:
+                - strong [ref=e261]: to join this conversation on GitHub.
+                - text: Already have an account?
+              - link "Sign in to comment" [ref=e262] [cursor=pointer]:
+                - /url: /login?return_to=https://github.com/lessweb/deepcode-cli/issues/82
+        - generic [ref=e264]:
+          - heading "Metadata" [level=2] [ref=e265]
+          - generic [ref=e267]:
+            - generic [ref=e269]:
+              - generic [ref=e270]:
+                - heading "Assignees" [level=3]
+              - generic [ref=e271]: No one assigned
+            - generic [ref=e273]:
+              - generic [ref=e274]:
+                - heading "Labels" [level=3]
+              - generic [ref=e275]: No labels
+            - generic [ref=e277]:
+              - generic [ref=e278]:
+                - heading "Type" [level=3]
+              - generic [ref=e279]: No type
+            - generic [ref=e281]:
+              - generic [ref=e282]:
+                - heading "Projects" [level=3]
+              - generic [ref=e283]: No projects
+            - generic [ref=e285]:
+              - generic [ref=e286]:
+                - heading "Milestone" [level=3]
+              - generic [ref=e287]: No milestone
+            - generic [ref=e289]:
+              - generic [ref=e290]:
+                - heading "Relationships" [level=3]
+              - generic [ref=e291]: None yet
+            - generic [ref=e293]:
+              - generic [ref=e294]:
+                - heading "Development" [level=3]
+              - generic [ref=e295]: No branches or pull requests
+            - heading "Issue actions" [level=2] [ref=e296]
+            - list
+  - contentinfo [ref=e297]:
+    - heading "Footer" [level=2] [ref=e298]
+    - generic [ref=e299]:
+      - generic [ref=e300]:
+        - link "GitHub Homepage" [ref=e301] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e302]
+        - generic [ref=e304]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e305]:
+        - heading "Footer navigation" [level=3] [ref=e306]
+        - list "Footer navigation" [ref=e307]:
+          - listitem [ref=e308]:
+            - link "Terms" [ref=e309] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e310]:
+            - link "Privacy" [ref=e311] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e312]:
+            - link "Security" [ref=e313] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e314]:
+            - link "Status" [ref=e315] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e316]:
+            - link "Community" [ref=e317] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e318]:
+            - link "Docs" [ref=e319] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e320]:
+            - link "Contact" [ref=e321] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e322]:
+            - button "Manage cookies" [ref=e324] [cursor=pointer]
+          - listitem [ref=e325]:
+            - button "Do not share my personal information" [ref=e327] [cursor=pointer]
