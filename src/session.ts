@@ -180,6 +180,15 @@ function getTotalTokens(usage: ModelUsage | null | undefined): number {
   return typeof totalTokens === "number" ? totalTokens : 0;
 }
 
+// Code-point ranges whose characters typically tokenize denser than Latin.
+// Covers CJK Unified (+ Ext A), Hiragana/Katakana, Hangul, CJK Compatibility,
+// CJK Ext B and beyond (supplementary plane), and fullwidth/halfwidth forms.
+const CJK_ADJACENT_REGEX = /[\u3400-\u9fff\uF900-\uFAFF\u3040-\u30ff\uac00-\ud7af\uFF00-\uFFEF\u{20000}-\u{2FFFF}]/u;
+
+function isCJKOrAdjacentCodePoint(char: string): boolean {
+  return CJK_ADJACENT_REGEX.test(char);
+}
+
 export type SessionStatus =
   | "failed"
   | "pending"
@@ -413,7 +422,7 @@ export class SessionManager {
   private estimateStreamTokens(text: string): number {
     let tokens = 0;
     for (const char of text) {
-      tokens += /[\u3400-\u9fff\uf900-\ufaff]/u.test(char) ? 0.6 : 0.3;
+      tokens += isCJKOrAdjacentCodePoint(char) ? 0.6 : 0.3;
     }
     return tokens;
   }
@@ -1160,7 +1169,12 @@ ${agentInstructions}
       this.appendSessionMessage(sessionId, instructionsMessage);
     }
 
-    this.recordUserPromptCheckpoint(sessionId);
+    this.ensureFileHistorySession(sessionId);
+    const checkpoint = this.recordUserPromptCheckpoint(sessionId);
+    if (checkpoint.changedFilePaths.length) {
+      const content = `Note that the user manually modified these files:\n${checkpoint.changedFilePaths.join("\n")}`;
+      this.appendSessionMessage(sessionId, this.buildSystemMessage(sessionId, content));
+    }
     const userMessage = this.buildUserMessage(sessionId, userPrompt);
     this.appendSessionMessage(sessionId, userMessage);
 
@@ -1181,9 +1195,19 @@ ${agentInstructions}
 
     this.appendSkillMessages(sessionId, userPrompt.skills);
 
-    this.activeSessionId = sessionId;
-    await this.activateSession(sessionId, controller);
-    return sessionId;
+    try {
+      this.activeSessionId = sessionId;
+      await this.activateSession(sessionId, controller);
+      return sessionId;
+    } catch (error) {
+      // If the session was persisted but never claimed as active (e.g. an abort
+      // during activation), claim it now so the next prompt routes to
+      // replySession instead of creating a duplicate session.
+      if (!this.activeSessionId) {
+        this.activeSessionId = sessionId;
+      }
+      throw error;
+    }
   }
 
   async replySession(sessionId: string, userPrompt: UserPromptContent, controller?: AbortController): Promise<void> {
@@ -1245,17 +1269,21 @@ ${agentInstructions}
     this.throwIfAborted(signal);
 
     this.appendSkillMessages(sessionId, userPrompt.skills);
-    this.activeSessionId = sessionId;
-    await this.activateSession(sessionId, controller);
+    try {
+      this.activeSessionId = sessionId;
+      await this.activateSession(sessionId, controller);
+    } catch (error) {
+      if (!this.activeSessionId) {
+        this.activeSessionId = sessionId;
+      }
+      throw error;
+    }
   }
 
   private isContinuePrompt(userPrompt: UserPromptContent): boolean {
-    return (
-      typeof userPrompt.text === "string" &&
-      userPrompt.text.trim() === "/continue" &&
-      (!userPrompt.imageUrls || userPrompt.imageUrls.length === 0) &&
-      (!userPrompt.skills || userPrompt.skills.length === 0)
-    );
+    // Treat /continue purely by text so an empty/accidentally-populated skills
+    // or imageUrls array does not bypass the continue resume path.
+    return typeof userPrompt.text === "string" && userPrompt.text.trim() === "/continue";
   }
 
   async activateSession(
@@ -1516,29 +1544,43 @@ ${agentInstructions}
     if (!client) {
       return;
     }
-    const sessionMessages = this.listSessionMessages(sessionId).filter((message) => !message.compacted);
-    if (sessionMessages.length === 0) {
+    // Operate on the full on-disk message list. Index math is computed on the
+    // non-compacted subset but mapped back to full-list indices so previously
+    // compacted messages (and earlier summaries) are preserved on save. Saving
+    // the filtered subset would silently delete all prior compacted history.
+    const allMessages = this.listSessionMessages(sessionId);
+    const activeIndexes: number[] = [];
+    for (let i = 0; i < allMessages.length; i += 1) {
+      if (!allMessages[i].compacted) {
+        activeIndexes.push(i);
+      }
+    }
+    if (activeIndexes.length === 0) {
       return;
     }
 
-    const startIndex = sessionMessages.findIndex((message) => message.role !== "system");
-    if (startIndex === -1) {
+    const startActivePos = activeIndexes.findIndex((pos) => allMessages[pos].role !== "system");
+    if (startActivePos === -1) {
       return;
     }
 
-    const searchStart = Math.floor(startIndex + ((sessionMessages.length - startIndex) * 2) / 3);
-    let endIndex = -1;
-    for (let i = Math.max(searchStart, startIndex); i < sessionMessages.length; i += 1) {
-      if (sessionMessages[i].role !== "tool") {
-        endIndex = i;
+    const searchStart = Math.floor(startActivePos + ((activeIndexes.length - startActivePos) * 2) / 3);
+    let endActivePos = -1;
+    for (let i = Math.max(searchStart, startActivePos); i < activeIndexes.length; i += 1) {
+      if (allMessages[activeIndexes[i]].role !== "tool") {
+        endActivePos = i;
         break;
       }
     }
-    if (endIndex === -1 || endIndex <= startIndex) {
+    if (endActivePos === -1 || endActivePos <= startActivePos) {
       return;
     }
 
-    const compactPrompt = getCompactPrompt(sessionMessages.slice(startIndex, endIndex));
+    const compactPromptMessages: SessionMessage[] = [];
+    for (let i = startActivePos; i < endActivePos; i += 1) {
+      compactPromptMessages.push(allMessages[activeIndexes[i]]);
+    }
+    const compactPrompt = getCompactPrompt(compactPromptMessages);
     const thinkingOptions = buildThinkingRequestOptions(thinkingEnabled, baseURL, reasoningEffort);
     const response = await this.createChatCompletionStream(
       client,
@@ -1572,8 +1614,9 @@ ${agentInstructions}
       updateTime: now,
     }));
 
-    for (let i = startIndex; i < endIndex; i += 1) {
-      sessionMessages[i] = { ...sessionMessages[i], compacted: true, updateTime: now };
+    for (let activePos = startActivePos; activePos < endActivePos; activePos += 1) {
+      const allIndex = activeIndexes[activePos];
+      allMessages[allIndex] = { ...allMessages[allIndex], compacted: true, updateTime: now };
     }
 
     const summaryMessage: SessionMessage = {
@@ -1591,8 +1634,12 @@ ${agentInstructions}
         isSummary: true,
       },
     };
-    sessionMessages.splice(endIndex, 0, summaryMessage);
-    this.saveSessionMessages(sessionId, sessionMessages);
+    // Insert the summary right after the compacted window, at the full-list
+    // position of the next active message (or end of list if window was last).
+    const summaryInsertIndex =
+      endActivePos + 1 < activeIndexes.length ? activeIndexes[endActivePos + 1] : allMessages.length;
+    allMessages.splice(summaryInsertIndex, 0, summaryMessage);
+    this.saveSessionMessages(sessionId, allMessages);
   }
 
   private getPromptToolOptions(): { model: string; webSearchEnabled: boolean } {
@@ -1868,10 +1915,37 @@ ${agentInstructions}
     projectDir: string;
     sessionsIndexPath: string;
   } {
-    const projectCode = getProjectCode(this.projectRoot);
+    const projectCode = this.getDisambiguatedProjectCode();
     const projectDir = path.join(os.homedir(), ".deepcode", "projects", projectCode);
     const sessionsIndexPath = path.join(projectDir, "sessions-index.json");
     return { projectCode, projectDir, sessionsIndexPath };
+  }
+
+  /**
+   * Returns the project code, appending a short hash suffix only when an
+   * existing sessions index for the base code was written by a different
+   * project root (a path collision). New projects and existing ones whose
+   * originalPath matches are unaffected.
+   */
+  private getDisambiguatedProjectCode(): string {
+    const baseCode = getProjectCode(this.projectRoot);
+    const baseDir = path.join(os.homedir(), ".deepcode", "projects", baseCode);
+    const indexPath = path.join(baseDir, "sessions-index.json");
+    try {
+      if (!fs.existsSync(indexPath)) {
+        return baseCode;
+      }
+      const raw = fs.readFileSync(indexPath, "utf8");
+      const parsed = JSON.parse(raw) as SessionsIndex;
+      const originalPath = typeof parsed.originalPath === "string" ? parsed.originalPath : "";
+      if (!originalPath || originalPath === this.projectRoot) {
+        return baseCode;
+      }
+    } catch {
+      return baseCode;
+    }
+    const hash = crypto.createHash("sha1").update(this.projectRoot).digest("hex").slice(0, 12);
+    return `${baseCode}-${hash}`;
   }
 
   private getFileHistory(): GitFileHistory {
@@ -1901,7 +1975,14 @@ ${agentInstructions}
     if (!previousHash) {
       return;
     }
-    this.updateLatestUserCheckpointHash(sessionId, undefined, previousHash);
+    // Anchor the latest user message at the current branch head. If there is no
+    // anchorable user message (e.g. files mutated before any user prompt), skip
+    // the redundant pre-mutation checkpoint — it would create a git commit that
+    // no undo target references.
+    const anchored = this.updateLatestUserCheckpointHash(sessionId, undefined, previousHash);
+    if (!anchored) {
+      return;
+    }
     const nextHash = fileHistory.recordCheckpoint(sessionId, [filePath], "Pre-mutation checkpoint");
     if (nextHash && nextHash !== previousHash) {
       this.updateLatestUserCheckpointHash(sessionId, previousHash, nextHash);
@@ -1914,15 +1995,24 @@ ${agentInstructions}
     fileHistory.recordCheckpoint(sessionId, [filePath], "File mutation checkpoint");
   }
 
-  private updateLatestUserCheckpointHash(sessionId: string, previousHash: string | undefined, nextHash: string): void {
+  private updateLatestUserCheckpointHash(
+    sessionId: string,
+    previousHash: string | undefined,
+    nextHash: string
+  ): boolean {
     const messages = this.listSessionMessages(sessionId);
     for (let index = messages.length - 1; index >= 0; index -= 1) {
       const message = messages[index];
       if (!message || !this.isUndoTargetMessage(message)) {
         continue;
       }
-      if (message.checkpointHash && message.checkpointHash !== previousHash) {
-        return;
+      // Only advance the checkpoint if the message's current hash matches the
+      // expected previousHash. When previousHash is undefined we treat it as
+      // "no expectation" so an unanchored message can be initialized. A message
+      // whose hash differs from a non-undefined previousHash belongs to a newer
+      // checkpoint and must not be overwritten.
+      if (previousHash !== undefined && message.checkpointHash && message.checkpointHash !== previousHash) {
+        return false;
       }
       messages[index] = {
         ...message,
@@ -1930,8 +2020,9 @@ ${agentInstructions}
         updateTime: new Date().toISOString(),
       };
       this.saveSessionMessages(sessionId, messages);
-      return;
+      return true;
     }
+    return false;
   }
 
   private canRestoreCheckpointHash(sessionId: string, checkpointHash: string): boolean {
@@ -2032,6 +2123,9 @@ ${agentInstructions}
     if (options.removeMessages) {
       this.removeSessionMessages([sessionId]);
     }
+    // Drop the session's checkpoint branch so deleted/evicted sessions do not
+    // accumulate orphan git refs in the file-history repository.
+    this.getFileHistory().deleteSession(sessionId);
   }
 
   private appendSessionMessage(sessionId: string, message: SessionMessage): void {

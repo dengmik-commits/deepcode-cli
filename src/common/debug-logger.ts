@@ -23,13 +23,37 @@ export type OpenAIChatCompletionDebugEntry = {
   };
 };
 
+const DEBUG_LOG_MAX_ENTRIES = 500;
+
 export function logOpenAIChatCompletionDebug(entry: OpenAIChatCompletionDebugEntry): void {
   try {
     const logPath = getDebugLogPath();
     fs.mkdirSync(path.dirname(logPath), { recursive: true });
     fs.appendFileSync(logPath, `${JSON.stringify(toSerializable(entry))}\n`, "utf8");
+    rotateDebugLogIfNeeded(logPath);
   } catch {
     // Debug logging must never affect CLI behavior.
+  }
+}
+
+// Keep the debug log bounded so it does not grow without limit across sessions.
+// Rotation keeps the most recent DEBUG_LOG_MAX_ENTRIES entries.
+function rotateDebugLogIfNeeded(logPath: string): void {
+  let raw: string;
+  try {
+    raw = fs.readFileSync(logPath, "utf8");
+  } catch {
+    return;
+  }
+  const lines = raw.split(/\r?\n/).filter((line) => line.trim().length > 0);
+  if (lines.length <= DEBUG_LOG_MAX_ENTRIES) {
+    return;
+  }
+  try {
+    const kept = lines.slice(-DEBUG_LOG_MAX_ENTRIES);
+    fs.writeFileSync(logPath, `${kept.join("\n")}\n`, "utf8");
+  } catch {
+    // rotation is best-effort
   }
 }
 

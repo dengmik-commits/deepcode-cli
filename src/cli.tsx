@@ -77,6 +77,17 @@ if (!process.stdin.isTTY) {
 
 void main();
 
+// Surface unhandled rejections and uncaught exceptions instead of failing
+// silently. These are programming errors; log and exit so the user sees them.
+process.on("unhandledRejection", (reason) => {
+  process.stderr.write(`deepcode: unhandled rejection: ${String(reason)}\n`);
+});
+process.on("uncaughtException", (error) => {
+  const message = error instanceof Error ? `${error.message}\n${error.stack ?? ""}` : String(error);
+  process.stderr.write(`deepcode: uncaught exception: ${message}\n`);
+  process.exit(1);
+});
+
 async function main(): Promise<void> {
   const updatePromptResult = await promptForPendingUpdate(packageInfo);
   if (updatePromptResult.installed) {
@@ -98,6 +109,29 @@ async function main(): Promise<void> {
       />,
       { exitOnCtrlC: false }
     );
+
+    // Register hard-signal handlers so SIGTERM/SIGINT (system shutdown, `kill`,
+    // IDE-kills-terminal) still trigger React unmount → SessionManager.dispose()
+    // → killLiveProcesses()/MCP disconnect. Without this, detached background
+    // bash children and MCP servers are orphaned. Guard against re-entry.
+    let handlingSignal = false;
+    const handleSignal = (signal: "SIGINT" | "SIGTERM") => {
+      if (handlingSignal) {
+        return;
+      }
+      handlingSignal = true;
+      try {
+        inkInstance.unmount();
+      } catch {
+        // ignore — best-effort cleanup
+      }
+      restartRef.current = null;
+      // Unmount triggers the App.tsx useEffect cleanup (dispose). Give it a
+      // brief chance to run before exiting.
+      setTimeout(() => process.exit(signal === "SIGINT" ? 130 : 143), 200);
+    };
+    process.once("SIGINT", () => handleSignal("SIGINT"));
+    process.once("SIGTERM", () => handleSignal("SIGTERM"));
 
     restartRef.current = () => {
       restarting = true;

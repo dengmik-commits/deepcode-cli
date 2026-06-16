@@ -202,7 +202,11 @@ export class McpClient {
           const initResult = result as { protocolVersion?: string } | undefined;
           const serverVersion = initResult?.protocolVersion;
           if (serverVersion && serverVersion !== "2025-03-26" && serverVersion !== "2024-11-05") {
-            reject(
+            // Clean up the spawned child process before rejecting, otherwise the
+            // handshake failure leaks the process. Use safeReject to preserve the
+            // single-resolution invariant alongside the close/error handlers.
+            this.disconnect();
+            safeReject(
               new Error(
                 `Unsupported MCP protocol version "${serverVersion}" from server "${this.serverName}". ` +
                   `Client supports 2025-03-26 and 2024-11-05.`
@@ -214,7 +218,7 @@ export class McpClient {
           this.sendNotification("notifications/initialized");
           resolve();
         })
-        .catch(reject);
+        .catch(safeReject);
     });
   }
 

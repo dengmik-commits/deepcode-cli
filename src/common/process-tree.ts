@@ -30,7 +30,12 @@ export function killProcessTree(
     if (runTaskkill(pid)) {
       return true;
     }
-    return killDirectProcess(pid, signal, killPid);
+    // taskkill is the only mechanism that walks the child tree (/T). If it
+    // fails, fall back to killing the single root PID for best-effort cleanup,
+    // but return false so callers know the tree was NOT fully killed and do
+    // not drop the process from their tracking (which would leak children).
+    killDirectProcess(pid, signal, killPid);
+    return false;
   }
 
   if (deps.killGroupOnNonWindows !== false && killDirectProcess(-pid, signal, killPid)) {

@@ -280,6 +280,15 @@ function startBackgroundShellCommand(
   const processId = typeof pid === "number" ? pid : -1;
   const stopCommand = typeof pid === "number" ? buildStopBackgroundProcessCommand(pid) : null;
 
+  // Detach the child from the parent event loop so a long-running background
+  // task does not keep the CLI alive. The stop command (kill/taskkill) is the
+  // intended cleanup path; without unref the stdio pipe handles block exit.
+  try {
+    child.unref();
+  } catch {
+    // unref is best-effort; ignore if not supported.
+  }
+
   let stdout = "";
   let stderr = "";
   let error: string | undefined;
@@ -402,7 +411,9 @@ function appendChunk(existing: string, chunk: string | Buffer): string {
 }
 
 function buildMarker(): string {
-  const token = Math.random().toString(36).slice(2);
+  // Cryptographically random token so the PWD sentinel cannot collide with
+  // legitimate command output and is not predictable across runs.
+  const token = randomUUID().replace(/-/g, "");
   return `__DEEPCODE_PWD__${token}__`;
 }
 

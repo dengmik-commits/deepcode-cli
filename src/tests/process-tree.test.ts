@@ -65,7 +65,10 @@ test("killProcessTree falls back to direct kill on Windows taskkill failure", ()
     },
   });
 
-  assert.equal(ok, true);
+  // Direct kill still happens (best effort), but the tree was NOT fully killed
+  // because taskkill /T was the only tree-walking mechanism. Return false so
+  // callers keep tracking the process instead of silently leaking children.
+  assert.equal(ok, false);
   assert.deepEqual(directKills, [{ pid: 1234, signal: "SIGTERM" }]);
 });
 

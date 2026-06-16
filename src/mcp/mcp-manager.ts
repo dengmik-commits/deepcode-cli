@@ -105,7 +105,11 @@ export class McpManager {
   }
 
   async initialize(servers?: Record<string, McpServerConfig>): Promise<void> {
-    if (this.initialized || this.disposed) return;
+    if (this.initialized && !this.disposed) return;
+    // Starting a fresh initialization lifecycle clears the disposed flag so a
+    // disconnect() -> initialize() sequence (without an intervening prepare())
+    // reconnects instead of silently no-op'ing.
+    this.disposed = false;
     this.initialized = true;
 
     if (!servers || Object.keys(servers).length === 0) return;

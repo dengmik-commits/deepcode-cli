@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as crypto from "crypto";
 import * as os from "os";
 import * as path from "path";
 import OpenAI from "openai";
@@ -115,7 +116,9 @@ function getMachineId(): string | undefined {
         return raw;
       }
     }
-    const generated = `${os.hostname()}-${Math.random().toString(36).slice(2)}-${Date.now()}`;
+    // Generate a random id without embedding os.hostname() so no machine
+    // fingerprint is persisted before the user has consented to telemetry.
+    const generated = `dc-${crypto.randomUUID()}`;
     fs.mkdirSync(path.dirname(idPath), { recursive: true });
     fs.writeFileSync(idPath, generated, "utf8");
     return generated;

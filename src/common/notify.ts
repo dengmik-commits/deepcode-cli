@@ -76,6 +76,18 @@ export function launchNotifyScript(
     const child = spawnProcess(commandPath, [], options);
     child.once("error", (error) => {
       if (process.platform === "win32") {
+        // On Windows, non-executable scripts (.cmd/.bat/.ps1) are the norm.
+        // Retry via cmd.exe /c so the notify script still runs.
+        if (error.code !== "EACCES" && error.code !== "ENOEXEC" && error.code !== "UNKNOWN") {
+          return;
+        }
+        try {
+          const fallbackChild = spawnProcess("cmd.exe", ["/c", commandPath], options);
+          fallbackChild.once("error", () => undefined);
+          fallbackChild.unref();
+        } catch {
+          // Ignore notification failures.
+        }
         return;
       }
       if (error.code !== "EACCES" && error.code !== "ENOEXEC") {
